@@ -8,3 +8,8 @@ module.exports = defineConfig({
 module.exports = {
   publicPath: './',
 };
+
+module.exports = {
+  outputDir: 'dist',
+  // other configurations...
+};
