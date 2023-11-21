@@ -31,7 +31,7 @@ jobs:
       run: ls -R
 
   deploy:
-    if: github.ref == 'refs/heads/gh-pages
+    if: github.ref == 'refs/heads/gh-pages'
     runs-on: ubuntu-latest
     needs: build
     steps:
