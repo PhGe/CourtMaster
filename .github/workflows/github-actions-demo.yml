@@ -35,8 +35,7 @@ jobs:
     needs: build
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+  
 
     - name: Switch to gh-pages branch
       run: git checkout gh-pages
