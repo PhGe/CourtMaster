@@ -49,6 +49,9 @@ jobs:
     - name: Build
       run: npm run build
 
+    - name: List Dist Directory
+      run: ls -R ./dist
+
 
 
   deploy:
