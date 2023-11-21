@@ -2,7 +2,7 @@ name: Test
 
 on:
   workflow_run:
-    workflows: [Deploy to GitHub Pages]
+    workflows: [GitHub Actions Demo]
     types:
       - completed
 
