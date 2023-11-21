@@ -6,9 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -23,6 +20,9 @@ jobs:
 
     - name: Build
       run: npm run build
+
+    - name: List Contents of Dist
+      run: ls dist
 
   deploy:
     runs-on: ubuntu-latest
