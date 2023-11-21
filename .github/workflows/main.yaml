@@ -8,12 +8,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-        contents: write
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
@@ -30,11 +28,10 @@ jobs:
       run: |
         git config user.name "${{ github.actor }}"
         git config user.email "${{ github.actor }}@users.noreply.github.com"
-        git branch -D deploy || true
-        git checkout --orphan deploy
+        git checkout --orphan gh-pages
         git rm -rf .
         mv dist/* .
         rm -r dist
         git add .
         git commit -m "Deploy to GitHub Pages: ${{ github.sha }}"
-        git push origin deploy --force
+        git push origin gh-pages --force
