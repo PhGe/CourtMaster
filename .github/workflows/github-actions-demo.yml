@@ -2,13 +2,10 @@ name: Deploy to GitHub Pages
 
 on: [push]
 
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
-
 
 concurrency:
   group: "pages"
@@ -54,9 +51,6 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
-        publish_branch: gh-pages
-
-        
 
   deploy:
     environment:
