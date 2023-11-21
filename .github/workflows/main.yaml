@@ -22,7 +22,8 @@ jobs:
       run: npm install
 
     - name: Build
-      run: npm run build
+      run: npm run build -- --output-path=dist
+    
 
     - name: Deploy to GitHub Pages
       run: |
@@ -30,8 +31,8 @@ jobs:
         git config user.email "${{ github.actor }}@users.noreply.github.com"
         git checkout --orphan gh-pages
         git rm -rf .
-        mv dist/* .
-        rm -r dist
+        mv public/* .
+        rm -r public
         git add .
         git commit -m "Deploy to GitHub Pages: ${{ github.sha }}"
         git push origin gh-pages --force
