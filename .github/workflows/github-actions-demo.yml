@@ -52,8 +52,6 @@ jobs:
     - name: List Dist Directory
       run: ls -R ./dist
 
-    - name: List Gh-Pages Branch
-      run: git ls-tree --name-only gh-pages
 
     - name: Create gh-pages branch
       run: |
@@ -69,7 +67,9 @@ jobs:
         publish_dir: .
         publish_branch: gh-pages
 
-
+    - name: List Gh-Pages Branch
+      run: git ls-tree --name-only gh-pages
+  
 
   deploy:
     environment:
