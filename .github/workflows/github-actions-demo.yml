@@ -32,6 +32,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist
 
-      - name: Run Playwright Tests
+    - name: Run Playwright Tests
       run: |
         npx playwright test
