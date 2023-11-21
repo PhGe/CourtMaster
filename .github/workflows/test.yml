@@ -1,0 +1,17 @@
+name: Test
+
+on:
+  workflow_run:
+    workflows: [Deploy to GitHub Pages]
+    types:
+      - completed
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Playwright Tests
+        run: npx playwright test
+
+      - name: Cleanup
+        run: rm -rf node_modules
