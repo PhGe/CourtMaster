@@ -1,8 +1,11 @@
 
 name: Build
-
-on: [push]
-
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
 
 jobs:
   Build:
@@ -12,6 +15,8 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
