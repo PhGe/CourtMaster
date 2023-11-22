@@ -4,7 +4,7 @@ const path = require('path');
 
 //Constants
 const PAGE_URL = 'https://phge.github.io/CourtMaster/';
-const checkText = 'Welcomessss';
+const checkText = 'Welcome';
 const currentDate = new Date().toISOString().replace(/:/g, '-').substring(0, 19);
 
 test('Verify Welcome Text on Page', async ({ page }) => {
