@@ -71,7 +71,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
   run-tests:
-    needs: deploy-development
+    needs: [deploy-development, deploy-production]
     
     environment:
       name: testing
