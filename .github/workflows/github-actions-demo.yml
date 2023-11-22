@@ -10,7 +10,7 @@ permissions:
 
 
 jobs:
-  Build:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -50,7 +50,7 @@ jobs:
       name: development
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: Build
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
@@ -61,7 +61,7 @@ jobs:
 
   run-tests:
 
-    needs: Build
+    needs: deploy
     environment:
       name: testing
       url: ${{ steps.deployment.outputs.page_url }}
