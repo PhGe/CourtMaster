@@ -2,7 +2,7 @@ name: Test
 
 on:
   workflow_run:
-    workflows: [pages-build-deployment]
+    workflows: [A]
     types:
       - completed
 
@@ -10,6 +10,9 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Playwright
+        run: npm init playwright@latest
+
       - name: Run Playwright Tests
         run: npx playwright test
 
