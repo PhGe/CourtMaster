@@ -26,6 +26,5 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test
 
-
       - name: Cleanup
         run: rm -rf node_modules
