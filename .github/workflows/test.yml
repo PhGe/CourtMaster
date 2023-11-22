@@ -11,13 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
 
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Print Current Working Directory
-        run: |
-          echo "Current working directory: $(pwd)"
-
       - name: Install Dependencies
         run: npm install
 
@@ -33,11 +26,6 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test
 
-      - name: Run Playwright Tests 2
-        run: npx playwright test tests
-
-      - name: Debug Test Information
-        run: npx playwright test --list
 
       - name: Cleanup
         run: rm -rf node_modules
