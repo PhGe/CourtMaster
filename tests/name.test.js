@@ -14,13 +14,11 @@ test('Verify Welcome Text on Page', async ({ page }) => {
 
   await expect(page.locator(`text=${checkText}`)).toBeVisible();
 
-
   const screenshotsDir = path.join(__dirname, 'Screenshots');
 
   if (!fs.existsSync(screenshotsDir)) {
     fs.mkdirSync(screenshotsDir);
   }
-
 
   const screenshotPath = path.join(screenshotsDir, `screenshot_${currentDate}.png`);
 
