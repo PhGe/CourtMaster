@@ -8,10 +8,13 @@ permissions:
   id-token: write
 
 jobs:
+  
   build:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -44,7 +47,9 @@ jobs:
 
   deploy-development:
     runs-on: ubuntu-latest
+
     needs: build
+
     steps:
       - name: Deploy to GitHub Pages - Development
         id: deployment
@@ -52,6 +57,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: dist
+
     environment:
       name: development
       url: ${{ steps.deployment.outputs.page_url }}
@@ -66,6 +72,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: dist
+
     environment:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}
