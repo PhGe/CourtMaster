@@ -58,4 +58,26 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: dist
-            
+
+  run-tests:
+    runs-on: ubuntu-latest
+    steps: 
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Playwright
+        run: npm init playwright@latest
+
+      - name: Install Playwright/test
+        run:  npm install --save-dev @playwright/test
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Run Playwright Tests
+        run: npx playwright test
+
+      - name: Cleanup
+        run: rm -rf node_modules
+          
