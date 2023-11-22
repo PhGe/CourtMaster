@@ -14,17 +14,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Install Playwright
-        run: npm init playwright@latest
-
       - name: Install Playwright/test
         run:  npm install --save-dev @playwright/test
-
-      - name: Install Playwright
-        run: npx playwright install
 
       - name: Run Playwright Tests
         run: npx playwright test
