@@ -60,6 +60,12 @@ jobs:
           artifact_name: dist
 
   run-tests:
+
+    needs: Build
+    environment:
+      name: testing
+      url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
     steps: 
 
