@@ -2,7 +2,7 @@ name: Test
 
 on:
   workflow_run:
-    workflows: [A]
+    workflows: [Build]
     types:
       - completed
 
@@ -12,6 +12,12 @@ jobs:
     steps:
       - name: Install Playwright
         run: npm init playwright@latest
+
+      - name: Install Playwright/test
+        run:  npm install --save-dev @playwright/test
+
+      - name: Install Playwright
+        run: npx playwright install
 
       - name: Run Playwright Tests
         run: npx playwright test
