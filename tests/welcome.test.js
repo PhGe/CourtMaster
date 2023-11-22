@@ -2,15 +2,15 @@ const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
 
-//Constants
 const PAGE_URL = 'https://phge.github.io/CourtMaster/';
 const checkText = 'Welcome';
 const currentDate = new Date().toISOString().replace(/:/g, '-').substring(0, 19);
+const screenshotPath = path.join(screenshotsDir, `screenshot_${currentDate}.png`);
 
-test('Verify Welcome Text on Page', async ({ page }) => {
+test('Verify Welcome Text', async ({ page }) => {
   await page.goto(PAGE_URL);
 
-  await page.waitForSelector(`text=${checkText}`);
+  await expect(checkText).toBeTruthy();
 
   await expect(page.locator(`text=${checkText}`)).toBeVisible();
 
@@ -19,11 +19,6 @@ test('Verify Welcome Text on Page', async ({ page }) => {
   if (!fs.existsSync(screenshotsDir)) {
     fs.mkdirSync(screenshotsDir);
   }
-
-  const screenshotPath = path.join(screenshotsDir, `screenshot_${currentDate}.png`);
-
-
   await page.screenshot({ path: screenshotPath  });
-
 
 });
