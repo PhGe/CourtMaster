@@ -1,6 +1,6 @@
 <template>
   <img alt="Vue logo" src="./assets/Tennisball.png">
-  <HelloWorld msg="Welcome Tennis players !"/>
+  <HelloWorld msg="Welcome Tennis players !!"/>
 </template>
 
 <script>
