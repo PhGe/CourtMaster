@@ -5,7 +5,6 @@ const path = require('path');
 const PAGE_URL = 'https://phge.github.io/CourtMaster/';
 const checkText = 'Welcome';
 const currentDate = new Date().toISOString().replace(/:/g, '-').substring(0, 19);
-const screenshotPath = path.join(screenshotsDir, `screenshot_${currentDate}.png`);
 
 test('Verify Welcome Text', async ({ page }) => {
   await page.goto(PAGE_URL);
@@ -19,6 +18,9 @@ test('Verify Welcome Text', async ({ page }) => {
   if (!fs.existsSync(screenshotsDir)) {
     fs.mkdirSync(screenshotsDir);
   }
+
+  const screenshotPath = path.join(screenshotsDir, `screenshot_${currentDate}.png`);
+
   await page.screenshot({ path: screenshotPath  });
 
 });
