@@ -22,5 +22,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  
+}
+img{
+  width: 150px;
+  height: 150px;
 }
 </style>
