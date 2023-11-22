@@ -72,13 +72,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Playwright
+      - name: Init Playwright
         run: npm init playwright@latest
 
       - name: Install Playwright/test
         run:  npm install --save-dev @playwright/test
 
-      - name: Install Playwright
+      - name: Install Playwright Browser
         run: npx playwright install
 
       - name: Run Playwright Tests
