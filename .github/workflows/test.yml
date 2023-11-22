@@ -2,7 +2,7 @@ name: Test
 
 on:
   workflow_run:
-    workflows: [pages-build-deploymen]
+    workflows: [pages-build-deployment]
     types:
       - completed
 
