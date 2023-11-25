@@ -22,3 +22,10 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+TODO:
+Add unit testing
+Add backend to frontend connection and show Database testusers
+Add better password (hashing etc.)
+Implement login system
+Change workflow to test after each step
