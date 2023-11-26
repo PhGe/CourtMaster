@@ -24,9 +24,10 @@ test('Check Database Users', async ({ page }) => {
         await expect(users).toBeTruthy();
 
         for (const user of users) {
-            console.log(await page.innerHTML());
-            await page.waitForSelector(`text=${user.username} - ${user.role}`);
-            await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible({ timeout: 300000 });
+            const selector = `div[data-v-200d6a8c] li:text("${user.username} - ${user.role}")`;
+            await page.waitForSelector(selector, { state: 'attached' });
+            await expect(page.locator(selector)).toBeVisible({ timeout: 300000 });
+            
         }
     } finally {
         // Close the database connection pool
