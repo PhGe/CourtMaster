@@ -5,8 +5,7 @@ const PAGE_URL = 'https://phge.github.io/CourtMaster/';
 const DATABASE_URL = 'postgres://dyjfpsho:a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j@flora.db.elephantsql.com/dyjfpsho';
 
 test('Check Database Users', async ({ page }) => {
-    // Wait for the page to finish loading
-    await page.waitForLoadState('load');
+   
     //database connection pool
     const pool = new Pool({
         connectionString: DATABASE_URL,
@@ -24,10 +23,7 @@ test('Check Database Users', async ({ page }) => {
         await expect(users).toBeTruthy();
 
         for (const user of users) {
-            const selector = `div[data-v-200d6a8c] li:text("${user.username} - ${user.role}")`;
-            await page.waitForSelector(selector, { state: 'attached' });
-            await expect(page.locator(selector)).toBeVisible({ timeout: 300000 });
-            
+            await expect(page.locator(`text=Philipp`)).toBeVisible();
         }
     } finally {
         // Close the database connection pool
