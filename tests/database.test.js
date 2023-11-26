@@ -24,7 +24,10 @@ test('Check Database Users', async ({ page }) => {
         console.log(users)
 
         for (const user of users) {
+
             console.log(`Before waitForSelector: ${user.username} - ${user.role}`);
+            console.log(await page.evaluate(() => console.log('Browser Console Output')));
+
 
             await page.waitForSelector(`text=/${user.username}/`, { timeout: 100000 });
 
