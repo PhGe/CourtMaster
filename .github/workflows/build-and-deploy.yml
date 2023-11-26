@@ -81,7 +81,7 @@ jobs:
     needs: [deploy-development, deploy-production]
     
     environment:
-      name: testing
+      name: production
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
