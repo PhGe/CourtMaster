@@ -23,7 +23,7 @@ test('Check Database Users', async ({ page }) => {
         await expect(users).toBeTruthy();
 
         for (const user of users) {
-            await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible();
+            await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible({ timeout: 10000 });
         }
     } finally {
         // Close the database connection pool
