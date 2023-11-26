@@ -24,7 +24,7 @@ test('Check Database Users', async ({ page }) => {
         await expect(users).toBeTruthy();
 
         for (const user of users) {
-            
+            console.log(await page.innerHTML());
             await page.waitForSelector(`text=${user.username} - ${user.role}`);
             await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible({ timeout: 300000 });
         }
