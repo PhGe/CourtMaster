@@ -32,7 +32,7 @@ test('Check Database User - Philipp Admin', async ({ page }) => {
         console.log(`Is element visible: ${isElementVisible}`);
         
         if (!isElementVisible) {
-            console.log(await page.innerHTML()); // Output the page content for further inspection
+            console.log(await page.innerHTML(`text=/${user.username}/`)); // Output the page content for further inspection
         }
         
         await expect(isElementVisible).toBe(true);
