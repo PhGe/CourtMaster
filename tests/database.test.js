@@ -21,8 +21,11 @@ test('Check Database Users', async ({ page }) => {
 
         // Perform your assertions
         await expect(users).toBeTruthy();
+        console.log(users)
 
         for (const user of users) {
+
+            console.log(user.username + " - " + user.role )
             await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible();
         }
     } finally {
