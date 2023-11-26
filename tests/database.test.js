@@ -1,24 +1,33 @@
 const { test, expect } = require('@playwright/test');
+const { Pool } = require('pg');
 
 const PAGE_URL = 'https://phge.github.io/CourtMaster/';
+const DATABASE_URL = 'postgres://dyjfpsho:a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j@flora.db.elephantsql.com/dyjfpsho';
 
 test('Check Database Users', async ({ page }) => {
+   
+    //database connection pool
+    const pool = new Pool({
+        connectionString: DATABASE_URL,
+    });
 
-    //fetch backend
-    const userResponse = await fetch('http://localhost:3000/users/v1')
-    const users = await userResponse.json();
+    try {
+        // Fetch data from the database
+        const result = await pool.query('SELECT * FROM users');
+        const users = result.rows;
 
+        // Go to the page
+        await page.goto(PAGE_URL);
 
-    //goto Page
-    await page.goto(PAGE_URL);
-  
-    await expect(users).toBeTruthy();
-    
-    //check if loaded successfully
-    for (const user of users) {
-        await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible();
+        // Perform your assertions
+        await expect(users).toBeTruthy();
+
+        for (const user of users) {
+            await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible();
+        }
+    } finally {
+        // Close the database connection pool
+        await pool.end();
     }
-  });
-
-
+});
 
