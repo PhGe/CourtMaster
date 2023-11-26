@@ -24,9 +24,8 @@ test('Check Database Users', async ({ page }) => {
         console.log(users)
 
         for (const user of users) {
-
-            console.log(user.username + " - " + user.role )
             await page.waitForSelector(`text=${user.username} - ${user.role}`);
+            console.log(await page.innerHTML(`text=${user.username} - ${user.role}`));
             await expect(page.locator(`text=${user.username} - ${user.role}`)).toBeVisible();
         }
     } finally {
