@@ -27,7 +27,6 @@ test('Check Database Users', async ({ page }) => {
         }
     } finally {
         // Close the database connection pool
-        console.log(await page.innerHTML());
         await pool.end();
     }
 });
