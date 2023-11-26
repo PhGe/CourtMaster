@@ -12,7 +12,7 @@ export default {
   },
   data() {
     return{
-    showMessage: process.env.NODE_ENV ==='development'
+    showMessage: process.env.NODE_ENV ==='production'
   };
 }}
 
