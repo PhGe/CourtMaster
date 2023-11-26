@@ -22,20 +22,20 @@ test('Check Database User - Philipp Admin', async ({ page }) => {
         await expect(user).toBeTruthy();
         console.log(user);
 
-        console.log(`Before waitForTimeout: ${user.username} - ${user.role}`);
-        await page.waitForTimeout(5000); // Adjust the timeout as needed
+        console.log(`Before waitForSelector: ${user.username} - ${user.role}`);
+        console.log(await page.evaluate(() => {
+            console.log('Browser Console Output');
+            return 'Done evaluating';
+        }));
         
-        console.log(`After waitForTimeout: ${user.username} - ${user.role}`);
-        
-        const isElementVisible = await page.isVisible(`text=/${user.username}/`);
-        
-        console.log(`Is element visible: ${isElementVisible}`);
-        
-        if (!isElementVisible) {
-            console.log(await page.innerHTML(`text=/${user.username}/`)); // Output the page content for further inspection
-        }
-        
-        await expect(isElementVisible).toBe(true);
+
+        // Wait for the element to be visible
+        await page.waitForSelector(`text=/${user.username}/`, { timeout: 10000 });
+
+        console.log(`After waitForSelector: ${user.username} - ${user.role}`);
+
+        console.log(await page.innerHTML(`text=/${user.username}/`));
+        await expect(page.locator(`text=/${user.username}/`)).toBeVisible();
     } finally {
         // Close the database connection pool
         await pool.end();
