@@ -102,6 +102,9 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test --trace on
 
+      - name: test Playwright reports
+        run: npx playwright show-trace test-results/tests-database-Check-Database-Users/trace.zip
+
       - name: Cleanup
         run: rm -rf node_modules
           
