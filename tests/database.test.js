@@ -31,7 +31,7 @@ test('Check Database Users', async ({ page }) => {
             console.log(`After waitForSelector: ${user.username} - ${user.role}`);
 
             console.log(await page.innerHTML(`Philipp`));
-            await expect(page.locator(`text=/${user.username}/`)).toBeVisible();
+            await expect(page.locator(`tPhilipp`)).toBeVisible();
         }
     } finally {
         // Close the database connection pool
