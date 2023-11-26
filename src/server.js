@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const userRoutes = require('./routes/userRoute.js');
 const { Pool } = require('pg');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -7,6 +8,9 @@ const swaggerUi = require('swagger-ui-express');
 // Create an Express application
 const app = express();
 const port = 3000;
+
+// Enable CORS
+app.use(cors());
 
 // PostgreSQL configuration
 const pool = new Pool({
