@@ -14,10 +14,10 @@ app.use(cors());
 
 // PostgreSQL configuration
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'courtmaster',
-  password: 'CreepJack187!',
+  user: 'dyjfpsho',
+  host: 'flora.db.elephantsql.com',
+  database: 'dyjfpsho',
+  password: 'a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j',
   port: 5432,
 });
 

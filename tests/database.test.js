@@ -7,7 +7,7 @@ test('Check Database Users', async ({ page }) => {
     //fetch backend
     const userResponse = await fetch('http://localhost:3000/users/v1')
     const users = await userResponse.json();
-    console.log(users)
+
 
     //goto Page
     await page.goto(PAGE_URL);
