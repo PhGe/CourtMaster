@@ -93,13 +93,15 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
 
-      - name: Install Dependencies
-        run: npm install
+
 
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Init Playwright
         run: npm init playwright@latest
