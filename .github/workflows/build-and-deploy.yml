@@ -75,14 +75,14 @@ jobs:
 
     environment:
       name: production
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.production.outputs.page_url }}
 
   run-tests:
     needs: [deploy-development, deploy-production]
     
     environment:
       name: testing
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.testing.outputs.page_url }}
 
     runs-on: ubuntu-latest
     steps: 
