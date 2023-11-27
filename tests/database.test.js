@@ -10,7 +10,7 @@ test('Check if "Philipp" exists on the site', async () => {
         connectionString: DATABASE_URL,
     });
 
-    const browser = await require('playwright').chromium.launch({ headless: true });
+    const browser = await require('playwright').chromium.launch({ headless: false });
     const context = await browser.newContext();
     const page = await context.newPage();
 
