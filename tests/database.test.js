@@ -1,32 +1,41 @@
+
 const { test, expect } = require('@playwright/test');
 const { Pool } = require('pg');
 
 const PAGE_URL = 'https://phge.github.io/CourtMaster/';
 const DATABASE_URL = 'postgres://dyjfpsho:a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j@flora.db.elephantsql.com/dyjfpsho';
 
-test('Check if "Philipp" exists on the site', async () => {
-    // Database connection pool
+test('Check Database Users', async ({ page }) => {
+   
+    //database connection pool
     const pool = new Pool({
         connectionString: DATABASE_URL,
     });
 
-    const browser = await require('playwright').chromium.launch({ headless: true });
-    const context = await browser.newContext();
-    const page = await context.newPage();
-
     try {
+        // Fetch data from the database
+        const result = await pool.query('SELECT * FROM users');
+        const users = result.rows;
+        
         // Go to the page
         await page.goto(PAGE_URL);
 
-        // Get the content of the page
-        const pageContent = await page.content();
-        console.log(pageContent);
+        // Perform your assertions
+        await expect(users).toBeTruthy();
+        console.log(users)
 
-        // Perform your assertion
-        await expect(pageContent).toContain('Philipp');
+        for (const user of users) {
+            console.log(`Before waitForSelector: ${user.username} - ${user.role}`);
+
+            await page.waitForSelector(`text=/${user.username}/`, { timeout: 100000 });
+
+            console.log(`After waitForSelector: ${user.username} - ${user.role}`);
+
+            console.log(await page.innerHTML(`text=/${user.username}/`));
+            await expect(page.locator(`text=/${user.username}/`)).toBeVisible();
+        }
     } finally {
         // Close the database connection pool
         await pool.end();
-        await browser.close();
     }
 });
