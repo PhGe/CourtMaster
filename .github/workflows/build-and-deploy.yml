@@ -110,18 +110,12 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test --trace on
 
-      - name: List Trace Files
-        run: ls -R test-results
-
-      - name: Display Trace File Contents
-        run: cat test-results/*.zip
-
       - name: Upload Trace File
         uses: actions/upload-artifact@v2
         with:
           name: trace
           path: test-results
-        if: always()
+        if: failure()
 
       - name: Cleanup
         run: rm -rf node_modules
