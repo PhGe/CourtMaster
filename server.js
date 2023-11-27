@@ -1,13 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-const userRoutes = require('./routes/userRoute.js');
+const userRoutes = require('./src/routes/userRoute.js');
 const { Pool } = require('pg');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+
 // Create an Express application
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Enable CORS
 app.use(cors());
@@ -37,7 +38,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./routes/*.js'], // Path to the API routes
+  apis: ['./src/routes/*.js'], // Path to the API routes
 };
 
 // Initialize Swagger
@@ -46,7 +47,10 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Route for API
+app.use('/users', userRoutes(pool));
 
+// Route for API
 app.use('/users', userRoutes(pool));
 
 app.get('/', (req, res) => {

@@ -1,21 +1,25 @@
+<!-- App.vue -->
 <template>
-    <img alt="Vue logo" src="../assets/Tennisball.png">
+  <div>
+    <img alt="Vue logo" src="./assets/Tennisball.png">
     <HelloWorld msg="Welcome Tennis players du looser !!!!!!!"/>
     <PlayerNames/>
-  </template>
-  
-  <script>
-  import HelloWorld from '../components/HelloWorld.vue';
-  import PlayerNames from '../components/PlayerNames.vue';
-  
-  
-  export default {
-    name: 'App',
-    components: {
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+  import HelloWorld from './components/HelloWorld.vue';
+  import PlayerNames from './components/PlayerNames.vue';
+
+export default {
+  name: 'App',
+  components: {
       HelloWorld,
       PlayerNames
   }
-  }
+};
+
   </script>
   
   <style>
