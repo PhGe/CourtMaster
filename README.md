@@ -24,8 +24,10 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 TODO:
-Add unit testing
-Add backend to frontend connection and show Database testusers
+Testing
+Register System
 Add better password (hashing etc.)
-Implement login system
+
+Login/Register should be the first site to show and stops going to other routes
+
 Change workflow to test after each step
