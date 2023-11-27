@@ -121,6 +121,7 @@ jobs:
         with:
           name: trace
           path: test-results
+        if: always()
 
       - name: Cleanup
         run: rm -rf node_modules
