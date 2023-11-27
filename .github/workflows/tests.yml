@@ -1,36 +1,21 @@
-name: Run Tests
-
+name: Playwright Tests
 on:
-  workflow_run:
-    workflows: ["Build and Deploy"]
-    types:
-      - completed
-
+  deployment_status:
 jobs:
-  run-tests:
+  test:
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-
+    if: github.event.deployment_status.state == 'success'
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
-      - name: Init Playwright
-        run: npm init playwright@latest
-
-      - name: Install Playwright/test
-        run: npm install --save-dev @playwright/test
-
-      - name: Install Playwright Browser
-        run: npx playwright install
-
-      - name: Run Playwright Tests
-        run: npx playwright test --trace on
-
-      - name: Upload Trace File
-        uses: actions/upload-artifact@v2
-        with:
-          name: trace
-          path: test-results
-
-      - name: Cleanup
-        run: rm -rf node_modules
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      run: npx playwright test
+      env:
+        PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
