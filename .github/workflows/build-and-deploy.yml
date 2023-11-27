@@ -46,7 +46,7 @@ jobs:
         path: ./dist
 
 
-        
+
 
   deploy-development:
     runs-on: ubuntu-latest
@@ -109,6 +109,12 @@ jobs:
 
       - name: Run Playwright Tests
         run: npx playwright test --trace on
+
+      - name: List Trace Files
+        run: ls -R test-results
+
+      - name: Display Trace File Contents
+        run: cat test-results/*.zip
 
       - name: Upload Trace File
         uses: actions/upload-artifact@v2
