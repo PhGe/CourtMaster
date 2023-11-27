@@ -67,6 +67,8 @@ jobs:
     environment:
       name: development
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
 
 
@@ -85,6 +87,8 @@ jobs:
     environment:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
   run-tests:
     needs: [deploy-development, deploy-production]
@@ -92,11 +96,11 @@ jobs:
     environment:
       name: testing
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     runs-on: ubuntu-latest
     steps: 
-
-
 
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
