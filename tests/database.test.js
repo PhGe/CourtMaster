@@ -16,7 +16,7 @@ test('Check Database Users', async ({ page }) => {
         // Fetch data from the database
         const result = await pool.query('SELECT * FROM users');
         const users = result.rows;
-        
+
         // Go to the page
         await page.goto(PAGE_URL);
 
@@ -24,6 +24,8 @@ test('Check Database Users', async ({ page }) => {
         await expect(users).toBeTruthy();
         console.log(users)
 
+        const pageContent = await page.content();
+        console.log(pageContent);
         for (const user of users) {
             console.log(`Before waitForSelector: ${user.username} - ${user.role}`);
 
@@ -33,6 +35,8 @@ test('Check Database Users', async ({ page }) => {
 
             console.log(await page.innerHTML(`text=/${user.username}/`));
             await expect(page.locator(`text=/${user.username}/`)).toBeVisible();
+            const pageContent = await page.content();
+            console.log(pageContent);
         }
     } finally {
         // Close the database connection pool
