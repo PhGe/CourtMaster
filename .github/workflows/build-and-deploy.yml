@@ -78,15 +78,9 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
   run-tests:
-    needs: [deploy-development, deploy-production]
-    
-    environment:
-      name: testing
-      url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
+    
     steps: 
-
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -104,16 +98,9 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test --trace on
 
-
-      - name: test Playwright reports
-        run: npx playwright show-trace test-results/tests-database-Check-Database-Users/trace.zip
-
       - name: Upload Trace File
         uses: actions/upload-artifact@v2
         with:
           name: trace
           path: test-results
-
-      - name: Cleanup
-        run: rm -rf node_modules
           
