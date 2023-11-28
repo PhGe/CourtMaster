@@ -36,12 +36,17 @@
 
         // Handle the response as needed
         console.log(response.data);
+        if (response.data.success) {
+          // Redirect to /subpage only if login is successful
+          this.$router.push('/subpage');
+        } else {
+          // Handle unsuccessful login (e.g., show an error message)
+          console.error('Login unsuccessful:', response.data.message);
+        }
       } catch (error) {
         console.error('Error signing up:', error);
+        alert("Falscher Login")
       }
-
-      // Redirect or perform additional actions after signup
-        this.$router.push('/subpage');// TODO push to main screen
       },
     },
   };
