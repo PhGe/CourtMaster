@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>User Lista</h1>
+      <h1>List of current users</h1>
       <ul>
         <li v-for="user in users" :key="user.id">
           {{ user.username }} - {{ user.role }}
@@ -18,7 +18,7 @@
     },
     mounted() {
       // Make an HTTP request to your backend API
-      fetch('http://localhost:3000/users/v1')
+      fetch('http://localhost:3000/users/all')
         .then((response) => response.json())
         .then((data) => {
           // Update the users data with the fetched data
