@@ -9,11 +9,15 @@
   },
   "dependencies": {
     "axios": "^1.6.2",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "pg": "^8.11.3",
     "playwright": "^1.40.0",
+    "polyfills": "^2.1.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "vue": "^3.2.13",
@@ -29,6 +33,11 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   },
   "eslintConfig": {
     "root": true,

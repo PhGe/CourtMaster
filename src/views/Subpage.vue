@@ -6,8 +6,10 @@
   </template>
 
   <script>
+  //import {hashPassword} from '../../test.js';
+  //console.log(hashPassword("ta"))
   export default {
-    name: 'SubpageView',
-
-    };
-</script>
+      name: 'SubpageView',
+  };
+  </script>
+  
