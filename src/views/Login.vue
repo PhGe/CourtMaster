@@ -37,8 +37,13 @@
         // Handle the response as needed
         console.log(response.data);
         if (response.data.success) {
-          // Redirect to /subpage only if login is successful
-          this.$router.push('/subpage');
+
+        // Store the token in localStorage
+        localStorage.setItem('authToken', response.data.token);
+
+        // Redirect to /subpage only if login is successful
+        this.$router.push('/subpage');
+        
         } else {
           // Handle unsuccessful login (e.g., show an error message)
           console.error('Login unsuccessful:', response.data.message);

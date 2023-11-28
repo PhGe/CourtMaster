@@ -7,6 +7,8 @@ const { insertUser, pool, getUserByUsername } = require('./database.js');
 const bodyParser = require('body-parser');
 const userRoute = require('./src/routes/userRoute.js');
 const { compare: bcryptCompare } = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
 
 
 // Create an Express application
@@ -74,48 +76,52 @@ app.get('/example', async (req, res) => {
   }
 });
 
+// Function to generate a JWT token
+function generateToken(user) {
+  const payload = {
+    userId: user.id,
+    username: user.username,
+    // Add other relevant user information
+  };
+
+  // Sign the token with a secret key
+  const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });
+  return token;
+}
+
 app.post('/users/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
     // Retrieve the user from the database by username
     const user = await getUserByUsername(username);
-    console.log("user: " +user.username + user.password_hash);
 
-    if (user) {
-      if (user.password_hash) {
-        // Hash the entered password
-        console.log('Entered password:', password);
-        const hashedPassword = await bcryptCompare(password, user.password_hash);
-        console.log('Hashed password:', hashedPassword);
+    if (user && user.password_hash) {
+      // Hash the entered password
+      const hashedPassword = await bcryptCompare(password, user.password_hash);
 
-        // Compare hashed passwords
-        if (hashedPassword) {
-          // Passwords match, grant access
-          console.log("MATCH")
-          res.json({ success: true, message: 'Login successful' });
-        } else {
-          // Passwords don't match, deny access
-          console.log("dontMATCH")
-          res.status(401).json({ success: false, message: 'Invalid password' });
-        }
+      if (hashedPassword) {
+        // Passwords match, generate a token
+        const token = generateToken(user);
+
+        // Send the token in the response
+        res.json({ success: true, token, message: 'Login successful' });
       } else {
-        // User found, but password_hash is missing
-        console.log("MATCHusernotpassword")
-        res.status(500).json({ success: false, error: 'User data is incomplete' });
+        // Passwords don't match, deny access
+        res.status(401).json({ success: false, message: 'Invalid password' });
       }
     } else {
-      // User not found
-      console.log("user not found")
+      // User not found or missing password_hash
       res.status(404).json({ success: false, message: 'User not found' });
     }
   } catch (error) {
     console.error('Error during login:', error.message);
-    console.error(error.stack);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
-  
 });
+
+
+
 app.get('/', (req, res) => {
   res.send('Welcome to the CourtMaster API. Available endpoint: users/v1');
 });
