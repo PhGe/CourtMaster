@@ -127,6 +127,6 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(port ,   () => {
+  console.log(`Server is running on http://192.168.178.70:${port}`);
 });

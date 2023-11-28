@@ -53,7 +53,7 @@
     console.log(userData)
       // Make an HTTP request to your server
       try {
-        const response = await axios.post('http://localhost:3000/users/signup', userData);
+        const response = await axios.post('http://192.168.178.70/users/signup', userData);
 
         // Handle the response as needed
         console.log(response.data);

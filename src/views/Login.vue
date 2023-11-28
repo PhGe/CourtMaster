@@ -32,7 +32,7 @@
     }
         try {
         console.log("userdata: " + userData.username + "::: " + userData.password)
-        const response = await axios.post('http://localhost:3000/users/login', userData);
+        const response = await axios.post('http://192.168.178.70/users/login', userData);
 
         // Handle the response as needed
         console.log(response.data);
@@ -43,7 +43,7 @@
 
         // Redirect to /subpage only if login is successful
         this.$router.push('/subpage');
-        
+
         } else {
           // Handle unsuccessful login (e.g., show an error message)
           console.error('Login unsuccessful:', response.data.message);
