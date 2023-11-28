@@ -26,6 +26,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 TODO:
 Testing
 
-Login session store
+Login session store/Logout
+
+Secure HTTP Auth.
 
 Change workflow to test after each step
