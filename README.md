@@ -25,9 +25,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 TODO:
 Testing
-Register System
-Add better password (hashing etc.)
 
-Login/Register should be the first site to show and stops going to other routes
+Login session store
 
 Change workflow to test after each step
