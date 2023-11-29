@@ -22,7 +22,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-
 // Define Swagger options
 const swaggerOptions = {
   swaggerDefinition: {
@@ -56,7 +55,6 @@ const swaggerOptions = {
 };
 
 module.exports = swaggerOptions;
-
 
 
 // Initialize Swagger

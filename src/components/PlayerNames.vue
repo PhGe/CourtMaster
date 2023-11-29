@@ -6,7 +6,7 @@
       :column="10"
       border>
       <el-descriptions-item v-for="user in users" :key="user.id" >{{ user.username }} 
-        <el-tag size="small" :type="user.role === 'admin' ? 'danger' : ''">{{ user.role }}</el-tag>
+        <el-tag size="small" :type="user.role === 'admin' ? 'danger' : (user.role === 'trainer' ? 'warning' : '')" >{{ user.role }}</el-tag>
       </el-descriptions-item>
     </el-descriptions>
     </div>
