@@ -1,20 +1,24 @@
 <template>
-    <div>
-      <h1>Signup</h1>
-      <form @submit.prevent="signup">
-        <label for="username">Username:</label>
-        <input v-model="username" type="text" id="username" required>
-        <br>
-        <label for="password">Password:</label>
-        <input v-model="password" type="password" id="password" required>
-        <br>
-        <label for="confirmPassword">Confirm Password:</label>
-        <input v-model="confirmPassword" type="password" id="confirmPassword" required>
-        <br>
-        <button type="submit">Signup</button>
-      </form>
-    </div>
-  </template>
+  <div class="signup-container">
+    <el-card class="signup-card">
+      <h2 class="signup-title">Signup</h2>
+      <el-form class="form" @submit.prevent="signup">
+        <el-form-item for="username">Username:
+          <el-input class="test" clearable maxlength="20" show-word-limit v-model="username" type="text" id="username" required @keyup.enter="signup"></el-input>
+        </el-form-item>
+        <el-form-item for="password">Password:
+          <el-input class="test" clearable v-model="password" type="password" id="password" required @keyup.enter="signup"></el-input>
+        </el-form-item>
+        <el-form-item for="confirmPassword">Confirm Password:
+          <el-input class="test" clearable v-model="confirmPassword" type="password" id="confirmPassword" required @keyup.enter="signup"></el-input>
+        </el-form-item>
+        <el-form-item class="signup-btn">
+          <el-button round type="primary" @click="signup">Signup</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
+</template>
 
   <script>
     const { hash: bcryptHash } = require('bcryptjs');
@@ -67,4 +71,28 @@
   },
 };
   </script>
+
+  <style scoped>
+  .signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+  }
+  
+  .signup-card {
+    width: 400px;
+  }
+  
+  .signup-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .signup-btn {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
   

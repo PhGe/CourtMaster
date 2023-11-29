@@ -3,6 +3,7 @@ import App from './App.vue';
 import store from './store'; // Import the Vuex store
 import router from './routes'; // Import the Vue Router
 import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css'
 
 
 const app = createApp(App);
