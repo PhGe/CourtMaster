@@ -3,10 +3,11 @@
       <el-descriptions
       title="User"
       direction="vertical"
-      :column="4"
-      :size="size"
+      :column="10"
       border>
-      <el-descriptions-item v-for="user in users" :key="user.id" >{{ user.username }} <el-tag size="small">{{ user.role }}</el-tag></el-descriptions-item>
+      <el-descriptions-item v-for="user in users" :key="user.id" >{{ user.username }} 
+        <el-tag size="small" :type="user.role === 'admin' ? 'danger' : ''">{{ user.role }}</el-tag>
+      </el-descriptions-item>
     </el-descriptions>
     </div>
   </template>
@@ -54,6 +55,12 @@
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
+
+  .admin-tag {
+    background-color: red; /* Add any other styles for the admin tag */
+    color: white; /* Text color for better visibility */
+  }
+
   ul {
     list-style-type: none;
     padding: 0;
