@@ -24,10 +24,11 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 TODO:
-Testing
+Testing -> ONGOING : old errors fixed add new tests when adding new components
 
-Login session store/Logout
+Login session store/Logout/more secure token
 
 Secure HTTP Auth.
 
-Change workflow to test after each step
+maybe prepare workflow diagram
+
