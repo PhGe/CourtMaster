@@ -87,7 +87,7 @@ router.get('/names', authenticateToken,async (req, res) => {
 router.post('/authenticate', async (req, res) => {
   try {
     // TODO generate random token
-    const token = 'TestToken';
+    const token = 'Bearer TestToken';
 
     res.json({ token });
   } catch (error) {

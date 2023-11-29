@@ -8,7 +8,7 @@ function authenticateToken(req, res, next) {
     }
   
     // For testing purposes, you can check if the token is equal to a hardcoded value
-    if (token !== 'TestToken') {
+    if (token !== 'Bearer TestToken') {
       return res.status(403).json({ message: 'Forbidden - Invalid token' });
     }
   
