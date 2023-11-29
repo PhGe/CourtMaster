@@ -8,8 +8,8 @@
       </ul>
     </div>
   </template>
-  
   <script>
+  
   export default {
     data() {
       return {
@@ -17,19 +17,37 @@
       };
     },
     mounted() {
-      // Make an HTTP request to your backend API
-      fetch('https://courtmasterapp.azurewebsites.net/users/all')
+  // Make an HTTP request to your backend API to authenticate and get a token
+  fetch('https://courtmasterapp.azurewebsites.net/users/authenticate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const authToken = data.token;
+
+      // Make an authenticated request to get user data using the obtained token
+      fetch('https://courtmasterapp.azurewebsites.net/users/all', {
+        headers: {
+          Authorization: authToken,
+        },
+      })
         .then((response) => response.json())
-        .then((data) => {
-          // Update the users data with the fetched data
-          this.users = data;
+        .then((userData) => {
+          this.users = userData;
         })
         .catch((error) => {
           console.error('Error fetching users:', error);
         });
-    },
-  };
-  </script>
+    })
+    .catch((error) => {
+      console.error('Authentication failed:', error);
+    });
+},
+};
+</script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>

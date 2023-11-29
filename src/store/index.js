@@ -1,17 +1,12 @@
 import { createStore } from 'vuex';
 
 export default createStore({
-  state() {
-    return {
-      isAuthenticated: false,
-    };
+  state: {
+    token: null,
   },
   mutations: {
-    login(state) {
-      state.isAuthenticated = true;
-    },
-    logout(state) {
-      state.isAuthenticated = false;
+    setToken(state, token) {
+      state.token = token;
     },
   },
 });

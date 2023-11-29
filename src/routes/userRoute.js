@@ -1,5 +1,6 @@
 // Import necessary modules
 const express = require('express');
+const authenticateToken = require('../../middleware/authenticate.js');
 const router = express.Router();
 
 /**
@@ -36,7 +37,7 @@ const router = express.Router();
 const userRoute = (pool) => {
   
 // Define a route to get all users
-router.get('/all', async (req, res) => {
+router.get('/all',authenticateToken, async (req, res) => {
   try {
     // Query to get all users
     const result = await pool.query('SELECT * FROM users');
@@ -69,7 +70,7 @@ router.get('/all', async (req, res) => {
  */
 
 // Define a route to get user names
-router.get('/names', async (req, res) => {
+router.get('/names', authenticateToken,async (req, res) => {
   try {
     // Query to get user names
     const result = await pool.query('SELECT username FROM users');
@@ -83,10 +84,21 @@ router.get('/names', async (req, res) => {
   }
 });
 
+
+router.post('/authenticate', async (req, res) => {
+  try {
+    // TODO generate random token
+    const token = 'Bearer TestToken';
+
+    res.json({ token });
+  } catch (error) {
+    console.error('Error during authentication:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
   return router;
 };
-
-
 
 // Export the router
 module.exports = userRoute;
