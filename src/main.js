@@ -4,6 +4,7 @@ import store from './store'; // Import the Vuex store
 import router from './routes'; // Import the Vue Router
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/display.css'
 import '../global.css'; 
 
 

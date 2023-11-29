@@ -1,15 +1,20 @@
-<template>
+
+  <template>
     <div>
-      <el-descriptions
-      title="User"
-      direction="vertical"
-      :column="10"
-      border>
-      <el-descriptions-item v-for="user in users" :key="user.id" >{{ user.username }} 
-        <el-tag size="small" :type="user.role === 'admin' ? 'danger' : (user.role === 'trainer' ? 'warning' : '')" >{{ user.role }}</el-tag>
-      </el-descriptions-item>
-    </el-descriptions>
-    </div>
+      <el-container>
+        <el-row>
+         <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" v-for="user in users" :key="user.id">
+        <el-descriptions
+        direction="vertical"
+        border>
+          <el-descriptions-item>{{ user.username }} 
+            <el-tag size="small" :type="user.role === 'admin' ? 'danger' : (user.role === 'trainer' ? 'warning' : '')" >{{ user.role }}</el-tag>
+          </el-descriptions-item>
+      </el-descriptions>
+    </el-col>
+   </el-row>
+  </el-container>
+</div>
   </template>
 
   <script>
@@ -56,21 +61,5 @@
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
 
-  .admin-tag {
-    background-color: red; /* Add any other styles for the admin tag */
-    color: white; /* Text color for better visibility */
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li::before {
-    content: '•'; /* Use a bullet point as the content before the li */
-    color: blue;
-    margin-right: 5px; /* Adjust margin if needed */
-
-  }
   
   </style>

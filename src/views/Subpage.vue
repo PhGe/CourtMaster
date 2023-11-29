@@ -21,8 +21,5 @@ import PlayerNames from '@/components/PlayerNames.vue';
     width: 150px;
     height: 150px;
   }
-  body{
-    background-color: lightgray;
-  }
 </style>
   
