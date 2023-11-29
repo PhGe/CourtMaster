@@ -18,7 +18,7 @@
     },
     mounted() {
       // Make an HTTP request to your backend API
-      fetch('http://localhost:3000/users/all')
+      fetch('https://20.79.208.63/users/all')
         .then((response) => response.json())
         .then((data) => {
           // Update the users data with the fetched data
