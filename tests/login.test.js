@@ -7,6 +7,6 @@ const {login} = require ('../tests/loginUtil')
     //get current URL
     const currentUrl = page.url();
 
-    expect(currentUrl).toBe('http://localhost:8080/#/subpage');
+    expect(currentUrl).toBe('https://phge.github.io/CourtMaster/#/subpage');
   });
 

@@ -1,5 +1,5 @@
 async function login(page) {
-    const PAGE_URL_LOGIN = 'localhost:8080/#/login';
+    const PAGE_URL_LOGIN = 'https://phge.github.io/CourtMaster/#/login';
     const username = "Phil"
     const password = "123"
     // Go to the page
