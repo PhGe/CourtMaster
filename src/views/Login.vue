@@ -3,11 +3,11 @@
     <el-card class="login-card">
         <h2 class="login-title">Login</h2>      
       <el-form class="form" @submit.prevent="login">
-        <el-form-item  for="username">Username:
-          <el-input class="test"  clearable maxlength="20" show-word-limit v-model="username" type="text" id="username" required @keyup.enter="login"></el-input>
+        <el-form-item  for="username">
+          <el-input placeholder="Username" class="test"  clearable maxlength="20" show-word-limit v-model="username" type="text" id="username" required @keyup.enter="login"></el-input>
         </el-form-item>
-        <el-form-item  for="password">Password:
-          <el-input class="test" clearable v-model="password" type="password" id="password" required @keyup.enter="login"></el-input>
+        <el-form-item  for="password">
+          <el-input placeholder="Password" class="test" clearable v-model="password" type="password" id="password" required @keyup.enter="login"></el-input>
         </el-form-item>
         <el-form-item  class="login-btn">
           <el-button  round type="primary" @click="login">Login</el-button>

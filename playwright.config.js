@@ -5,7 +5,7 @@ export default defineConfig({
   // ...
   use: {
     trace: 'on-first-retry', // record traces on first retry of each test
-    headless: false,
+    headless: true,
   },
 });
 
