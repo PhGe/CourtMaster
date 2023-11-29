@@ -18,7 +18,7 @@
     },
     mounted() {
       // Make an HTTP request to your backend API
-      fetch('https://20.79.208.63/users/all')
+      fetch('https://courtmasterapp.azurewebsites.net/users/all')
         .then((response) => response.json())
         .then((data) => {
           // Update the users data with the fetched data

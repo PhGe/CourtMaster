@@ -53,7 +53,7 @@
     console.log(userData)
       // Make an HTTP request to your server
       try {
-        const response = await axios.post('https://20.79.208.63/users/signup', userData);
+        const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/signup', userData);
 
         // Handle the response as needed
         console.log(response.data);

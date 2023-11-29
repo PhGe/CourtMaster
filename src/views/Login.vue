@@ -32,12 +32,12 @@
     }
         try {
         console.log("userdata: " + userData.username + "::: " + userData.password)
-        const response = await axios.post('https://20.79.208.63/users/login', userData);
+        const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/login', userData);
 
         // Handle the response as needed
         console.log(response.data);
         if (response.data.success) {
-            
+
         // Store the token in localStorage
         localStorage.setItem('authToken', response.data.token);
 
