@@ -2,10 +2,10 @@
 const { test, expect } = require('@playwright/test');
 const { Pool } = require('pg');
 
-const PAGE_URL = 'https://phge.github.io/CourtMaster/';
+const PAGE_URL = 'https://phge.github.io/CourtMaster/#/subpage';
 const DATABASE_URL = 'postgres://dyjfpsho:a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j@flora.db.elephantsql.com/dyjfpsho';
 
-test.skip('Check Database Users', async ({ page }) => {
+test('Check Database Users', async ({ page }) => {
    
     //database connection pool
     const pool = new Pool({
@@ -29,7 +29,7 @@ test.skip('Check Database Users', async ({ page }) => {
         for (const user of users) {
             console.log(`Before waitForSelector: ${user.username} - ${user.role}`);
 
-            await page.waitForSelector(`text=/${user.username}/`, { timeout: 100000 });
+            await page.waitForSelector(`text=/${user.username}/`);
 
             console.log(`After waitForSelector: ${user.username} - ${user.role}`);
 

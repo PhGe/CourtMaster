@@ -1,13 +1,16 @@
 <template>
     <div>
-      <h1>List of current users</h1>
-      <ul>
-        <li v-for="user in users" :key="user.id">
-          {{ user.username }} - {{ user.role }}
-        </li>
-      </ul>
+      <el-descriptions
+      title="User"
+      direction="vertical"
+      :column="4"
+      :size="size"
+      border>
+      <el-descriptions-item v-for="user in users" :key="user.id" >{{ user.username }} <el-tag size="small">{{ user.role }}</el-tag></el-descriptions-item>
+    </el-descriptions>
     </div>
   </template>
+
   <script>
   
   export default {
