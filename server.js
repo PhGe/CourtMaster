@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const userRoute = require('./src/routes/userRoute.js');
 const { compare: bcryptCompare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const authenticateToken = require('./middleware/authenticate.js');
 
 
 
@@ -19,6 +20,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 app.use(bodyParser.json());
+
 
 
 // Define Swagger options
@@ -36,9 +38,26 @@ const swaggerOptions = {
         description: 'APIs regarding Users',
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
   },
   apis: ['./src/routes/*.js'], // Path to the API routes
 };
+
+module.exports = swaggerOptions;
+
+
 
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -65,8 +84,8 @@ app.post('/users/signup', async (req, res) => {
   }
 });
 
-app.get('/example', async (req, res) => {
-  const username = 'Master3';
+app.get('/example', authenticateToken ,async (req, res) => {
+  const username = 'Philipp';
   const user = await getUserByUsername(username);
 
   if (user) {
@@ -120,10 +139,8 @@ app.post('/users/login', async (req, res) => {
   }
 });
 
-
-
 app.get('/', (req, res) => {
-  res.send('Welcome to the CourtMaster API. Available endpoint: users/v1');
+  res.send('Welcome to the CourtMaster API. Available endpoint: users/all or /example');
 });
 
 // Start the server

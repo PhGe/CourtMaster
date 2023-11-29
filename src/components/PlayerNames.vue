@@ -18,7 +18,7 @@
     },
     mounted() {
   // Make an HTTP request to your backend API to authenticate and get a token
-  fetch('https://courtmasterapp.azurewebsites.net/users/authenticate', {
+  fetch('http://localhost:3000/users/authenticate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -29,7 +29,7 @@
       const authToken = data.token;
 
       // Make an authenticated request to get user data using the obtained token
-      fetch('https://courtmasterapp.azurewebsites.net/users/all', {
+      fetch('http://localhost:3000/users/all', {
         headers: {
           Authorization: authToken,
         },

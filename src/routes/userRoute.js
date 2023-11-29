@@ -31,7 +31,6 @@ const router = express.Router();
  *                 updated_at: 2023-12-25T11:22:16.532Z
  */
 
-
 // Define a route to get user data
 
 const userRoute = (pool) => {
@@ -74,7 +73,7 @@ router.get('/names', authenticateToken,async (req, res) => {
   try {
     // Query to get user names
     const result = await pool.query('SELECT username FROM users');
-    const usernames = result.rows.map(user => user.username);
+    const usernames = result.rows;
 
     // Send the user data as a JSON response
     res.json(usernames);
@@ -88,7 +87,7 @@ router.get('/names', authenticateToken,async (req, res) => {
 router.post('/authenticate', async (req, res) => {
   try {
     // TODO generate random token
-    const token = 'Bearer TestToken';
+    const token = 'TestToken';
 
     res.json({ token });
   } catch (error) {
