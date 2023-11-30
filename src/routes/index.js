@@ -29,7 +29,7 @@ router.beforeEach(async (to, from, next) => {
 
     // Validate the token on the server
     try {
-      const response = await axios.post('http://localhost:3000/users/authenticate-token', { token: authToken });
+      const response = await axios.post('courtmasterapp.azurewebsites.net/users/authenticate-token', { token: authToken });
       console.log(response)
       console.log(response.data)
       console.log(response.data.success)

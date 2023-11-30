@@ -27,7 +27,7 @@
           console.log(authToken)
   
           // Make a request to /authenticate with the token
-          const responseAuthenticate = await fetch('http://localhost:3000/users/authenticate', {
+          const responseAuthenticate = await fetch('courtmasterapp.azurewebsites.net/users/authenticate', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -47,7 +47,7 @@
       async fetchUserData(authToken) {
         try {
           // Make an authenticated request to get user data using the obtained token
-          const responseUserData = await fetch('http://localhost:3000/users/all', {
+          const responseUserData = await fetch('courtmasterapp.azurewebsites.net/users/all', {
             headers: {
               'Authorization': authToken,
             },
@@ -58,6 +58,7 @@
           this.users = userData;
         } catch (error) {
           console.error('Error fetching users:', error);
+          this.$router.push('/login');
         }
       },
       async getToken() {

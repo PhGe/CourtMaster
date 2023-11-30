@@ -12,7 +12,7 @@ import PlayerNames from '@/components/PlayerNames.vue';
 
   export default {
     name: "SubpageView",
-    components: { PlayerNames }
+    components: { PlayerNames },
 };
   </script>
 

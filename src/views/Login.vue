@@ -29,23 +29,19 @@ export default {
     };
   },
   methods: {
-  async  login() {
+    async login() {
+  const userData = {
+    username: this.username,
+    password: this.password,
+  };
 
-      const userData = {
-      username: this.username,
-      password: this.password,
-  }
-      try {
-      console.log("userdata: " + userData.username + "::: " + userData.password)
-      const response = await axios.post('http://localhost:3000/users/login', userData, {
-      headers: {
-        'Authorization': `Bearer ${this.token}`
-        }
-      });
-      // Handle the response as needed
-      console.log(response.data);
-      if (response.data.success) {
+  try {
+    console.log("userdata: " + userData.username + "::: " + userData.password)
+    const response = await axios.post('courtmasterapp.azurewebsites.net/users/login', userData);
+    // Handle the response as needed
+    console.log(response.data);
 
+    if (response.data.success) {
       // Store the user and token in local state
       this.user = response.data.user;
       this.token = response.data.token;
@@ -54,17 +50,21 @@ export default {
 
       // Redirect to /subpage only if login is successful
       this.$router.push('/subpage');
+    } else {
+      // Handle unsuccessful login (e.g., show an error message)
+      console.error('Login unsuccessful:', response.data.message);
 
-      } else {
-        // Handle unsuccessful login (e.g., show an error message)
-        console.error('Login unsuccessful:', response.data.message);
+      // Check if the error is due to an expired token
+      if (response.data.message === 'Forbidden: Invalid token') {
+        // Redirect to login page or handle it as appropriate
+        this.$router.push('/login');
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      alert("Falscher Login")
     }
-    },
-    
+  } catch (error) {
+    console.error('Error logging in:', error);
+    alert("Falscher Login")
+  }
+},  
   },
 };
 </script>
