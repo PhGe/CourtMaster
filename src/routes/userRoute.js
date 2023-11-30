@@ -100,6 +100,13 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+router.post('/authenticate-token', async (req, res) => {
+  // If the execution reaches here, it means the token is valid
+  res.json({ success: true, message: 'Token is valid' });
+  
+});
+
+
   return router;
 };
 
