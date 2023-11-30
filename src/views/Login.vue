@@ -25,6 +25,7 @@ export default {
     return {
       username: '',
       password: '',
+      token: null
     };
   },
   methods: {
@@ -36,12 +37,18 @@ export default {
   }
       try {
       console.log("userdata: " + userData.username + "::: " + userData.password)
-      const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/login', userData);
-
+      const response = await axios.post('http://localhost:3000/users/login', userData, {
+      headers: {
+        'Authorization': `Bearer ${this.token}`
+        }
+      });
       // Handle the response as needed
       console.log(response.data);
       if (response.data.success) {
 
+      // Store the user and token in local state
+      this.user = response.data.user;
+      this.token = response.data.token;
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
 
@@ -53,10 +60,11 @@ export default {
         console.error('Login unsuccessful:', response.data.message);
       }
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error('Error logging in:', error);
       alert("Falscher Login")
     }
     },
+    
   },
 };
 </script>

@@ -9,7 +9,10 @@ const userRoute = require('./src/routes/userRoute.js');
 const { compare: bcryptCompare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('./middleware/authenticate.js');
-
+const {
+  setTokenAndExpiration,
+  checkTokenExpiration,
+} = require('./src/utils/authUtils.js');
 
 
 // Create an Express application
@@ -20,6 +23,8 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 app.use(bodyParser.json());
+
+
 
 
 // Define Swagger options
@@ -56,15 +61,33 @@ const swaggerOptions = {
 
 module.exports = swaggerOptions;
 
-
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+// Function to generate a JWT token
+function generateToken(user) {
+  const payload = {
+    userId: user.id,
+    username: user.username,
+    role: user.role
+  };
+
+  // Sign the token with a secret key
+  const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '20s' });
+  return token;
+}
+
 // Route for API
-app.use('/users', userRoute(pool));
+
+app.use('/users' ,userRoute(pool));
+
+app.get('/subpage', authenticateToken, (req, res) => {
+  // Only logged-in users can access this route
+  res.send('Welcome to /subpage');
+});
 
 
 app.post('/users/signup', async (req, res) => {
@@ -93,19 +116,6 @@ app.get('/example', authenticateToken ,async (req, res) => {
   }
 });
 
-// Function to generate a JWT token
-function generateToken(user) {
-  const payload = {
-    userId: user.id,
-    username: user.username,
-    // Add other relevant user information
-  };
-
-  // Sign the token with a secret key
-  const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '1h' });
-  return token;
-}
-
 app.post('/users/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -119,8 +129,13 @@ app.post('/users/login', async (req, res) => {
 
       if (hashedPassword) {
         // Passwords match, generate a token
+        console.log("generateToken")
         const token = generateToken(user);
+        const expirationTime = 20;
+        setTokenAndExpiration(token, expirationTime)
 
+        //on every request check if expired
+        checkTokenExpiration();
         // Send the token in the response
         res.json({ success: true, token, message: 'Login successful' });
       } else {
@@ -141,7 +156,18 @@ app.get('/', (req, res) => {
   res.send('Welcome to the CourtMaster API. Available endpoint: users/all or /example');
 });
 
+// Middleware to check token expiration on every request
+app.use((req, res, next) => {
+  try {
+    checkTokenExpiration(); // Pass the response object
+    next();
+  } catch (error) {
+    console.error("Middleware: Error checking token expiration", error);
+    next(error); // pass the error to the next middleware
+  }
+});
+
 // Start the server
 app.listen(port ,   () => {
-  console.log(`Server is running on https://courtmasterapp.azurewebsites.net`);
+  console.log(`Server is running on http://localhost:3000/`);
 });

@@ -18,45 +18,66 @@
   </template>
 
   <script>
-  
   export default {
+    methods: {
+      async authenticateWithToken() {
+        try {
+          // Retrieve the token from localStorage
+          const authToken = await this.getToken();
+          console.log(authToken)
+  
+          // Make a request to /authenticate with the token
+          const responseAuthenticate = await fetch('http://localhost:3000/users/authenticate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': authToken,
+            },
+          });
+          console.log(responseAuthenticate)
+          // Handle the response from /authenticate
+          const dataAuthenticate = await responseAuthenticate.json();
+          console.log(dataAuthenticate)
+          // Use the obtained token from /authenticate to make another request to /users/all
+          await this.fetchUserData(dataAuthenticate.token);
+        } catch (error) {
+          console.error('Error during authentication:', error);
+        }
+      },
+      async fetchUserData(authToken) {
+        try {
+          // Make an authenticated request to get user data using the obtained token
+          const responseUserData = await fetch('http://localhost:3000/users/all', {
+            headers: {
+              'Authorization': authToken,
+            },
+          });
+  
+          // Handle the response from /users/all
+          const userData = await responseUserData.json();
+          this.users = userData;
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+      },
+      async getToken() {
+        // Retrieve the token from localStorage
+        const token = localStorage.getItem('authToken');
+        console.log(token)
+        return token;
+      },
+    },
     data() {
       return {
         users: [], // This is where you store the fetched users
       };
     },
     mounted() {
-  // Make an HTTP request to your backend API to authenticate and get a token
-  fetch('https://courtmasterapp.azurewebsites.net/users/authenticate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+      // Call the authenticateWithToken method to use the token and fetch user data
+      this.authenticateWithToken();
     },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const authToken = data.token;
-
-      // Make an authenticated request to get user data using the obtained token
-      fetch('https://courtmasterapp.azurewebsites.net/users/all', {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-        .then((response) => response.json())
-        .then((userData) => {
-          this.users = userData;
-        })
-        .catch((error) => {
-          console.error('Error fetching users:', error);
-        });
-    })
-    .catch((error) => {
-      console.error('Authentication failed:', error);
-    });
-},
-};
-</script>
+  };
+  </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>

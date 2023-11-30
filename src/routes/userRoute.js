@@ -86,8 +86,12 @@ router.get('/names', authenticateToken,async (req, res) => {
 
 router.post('/authenticate', async (req, res) => {
   try {
-    // TODO generate random token
-    const token = 'Bearer TestToken';
+    console.log(req.body.token)
+    // Assuming the token is sent in the request body during login
+    console.log(req.headers.authorization)
+    const token = req.headers.authorization;
+    console.log("token: " + token)
+    // You might want to perform additional verification or checks on the token here
 
     res.json({ token });
   } catch (error) {
@@ -96,8 +100,15 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+router.post('/authenticate-token', async (req, res) => {
+  // If the execution reaches here, it means the token is valid
+  res.json({ success: true, message: 'Token is valid' });
+});
+
+
   return router;
 };
+
 
 // Export the router
 module.exports = userRoute;
