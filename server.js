@@ -169,5 +169,5 @@ app.use((req, res, next) => {
 
 // Start the server
 app.listen(port ,   () => {
-  console.log(`Server is running on http://localhost:3000/`);
+  console.log(`Server is running on courtmasterapp.azurewebsites.net/`);
 });
