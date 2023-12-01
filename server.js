@@ -76,7 +76,7 @@ function generateToken(user) {
   };
 
   // Sign the token with a secret key
-  const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '20s' });
+  const token = jwt.sign(payload, 'your-secret-key', { expiresIn: '10m' });
   return token;
 }
 
@@ -84,9 +84,9 @@ function generateToken(user) {
 
 app.use('/users' ,userRoute(pool));
 
-app.get('/subpage', authenticateToken, (req, res) => {
+app.get('/userlist', authenticateToken, (req, res) => {
   // Only logged-in users can access this route
-  res.send('Welcome to /subpage');
+  res.send('Welcome to /userlist');
 });
 
 
@@ -131,7 +131,7 @@ app.post('/users/login', async (req, res) => {
         // Passwords match, generate a token
         console.log("generateToken")
         const token = generateToken(user);
-        const expirationTime = 20;
+        const expirationTime = 120;
         setTokenAndExpiration(token, expirationTime)
 
         //on every request check if expired
@@ -169,5 +169,5 @@ app.use((req, res, next) => {
 
 // Start the server
 app.listen(port ,   () => {
-  console.log(`Server is running on https://courtmasterapp.azurewebsites.net/`);
+  console.log(`Server is running on http://localhost:3000/`);
 });

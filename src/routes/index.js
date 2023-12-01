@@ -1,16 +1,18 @@
 // router.js
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import Subpage from '../views/Subpage.vue';
+import Userlist from '../views/Userlist.vue';
 import Login from '../views/Login.vue';
 import SignUp from '../views/SignUp.vue';
+import CalendarView from '../views/CalendarView.vue'
 import axios from 'axios';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/subpage', component: Subpage, meta: { requiresAuth: true }, },
+  { path: '/userlist', component: Userlist, meta: { requiresAuth: true }, },
   { path: '/signup', component: SignUp },
-  { path: '/login', component: Login}
+  { path: '/login', component: Login},
+  { path: '/calendar', component: CalendarView, meta: { requiresAuth: true }, }
 ];
 
 const router = createRouter({
@@ -29,7 +31,7 @@ router.beforeEach(async (to, from, next) => {
 
     // Validate the token on the server
     try {
-      const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/authenticate-token', { token: authToken });
+      const response = await axios.post('http://localhost:3000/users/authenticate-token', { token: authToken });
       console.log(response)
       console.log(response.data)
       console.log(response.data.success)

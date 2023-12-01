@@ -37,7 +37,7 @@ export default {
 
   try {
     console.log("userdata: " + userData.username + "::: " + userData.password)
-    const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/login', userData);
+    const response = await axios.post('http://localhost:3000/users/login', userData);
     // Handle the response as needed
     console.log(response.data);
 
@@ -48,8 +48,8 @@ export default {
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
 
-      // Redirect to /subpage only if login is successful
-      this.$router.push('/subpage');
+      // Redirect to /userlist only if login is successful
+      this.$router.push('/userlist');
     } else {
       // Handle unsuccessful login (e.g., show an error message)
       console.error('Login unsuccessful:', response.data.message);

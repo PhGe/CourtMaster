@@ -8,6 +8,6 @@ const {login} = require ('../src/utils/loginUtil')
     //get current URL
     const currentUrl = page.url();
 
-    expect(currentUrl).toBe('https://phge.github.io/CourtMaster/#/subpage');
+    expect(currentUrl).toBe('https://phge.github.io/CourtMaster/#/userlist');
   });
 

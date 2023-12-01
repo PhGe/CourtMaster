@@ -50,7 +50,7 @@ function checkTokenExpiration() {
   
   // Function to start the inactivity timer
   function startInactivityTimer() {
-    const inactivityTimeout = 30* 60 * 1000; // 1 minute in milliseconds
+    const inactivityTimeout = 30* 60 * 1000; //30 minute in milliseconds
 
     // Clear any existing timer
     clearTimeout(inactivityTimer);
