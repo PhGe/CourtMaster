@@ -6,6 +6,22 @@ function getToken(req)
   return token
 }
 
+function extractUserId(req) {
+  const token = getToken(req);
+  if (!token) {
+    return null; // Token not provided
+  }
+  try {
+    const decodedToken = jwt.verify(token, 'your-secret-key');
+    console.log("AHUGA"+ decodedToken.userId)
+    return decodedToken.userId; // Extract user ID from the decoded token
+  } catch (error) {
+    console.error('Error extracting user ID:', error);
+    return null; // Error occurred while extracting user ID
+  }
+}
+
+
 function authenticateToken(req, res, next) {
   console.log(req.headers.authorization)
   console.log("auth")
@@ -33,4 +49,4 @@ function authenticateToken(req, res, next) {
 }
 
 
-module.exports = authenticateToken, getToken;
+module.exports = authenticateToken, extractUserId ,getToken;

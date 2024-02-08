@@ -37,7 +37,7 @@ export default {
 
   try {
     console.log("userdata: " + userData.username + "::: " + userData.password)
-    const response = await axios.post('https://courtmasterapp.azurewebsites.net/users/login', userData);
+    const response = await axios.post('http://localhost:3000/users/login', userData);
     // Handle the response as needed
     console.log(response.data);
 
@@ -45,6 +45,7 @@ export default {
       // Store the user and token in local state
       this.user = response.data.user;
       this.token = response.data.token;
+      this.$store.dispatch('login', { token: this.token, userId: response.data.userId }); 
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
 

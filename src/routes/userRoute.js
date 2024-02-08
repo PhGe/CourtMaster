@@ -83,7 +83,6 @@ router.get('/names', authenticateToken,async (req, res) => {
   }
 });
 
-
 router.post('/authenticate', async (req, res) => {
   try {
     console.log(req.body.token)

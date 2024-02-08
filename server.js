@@ -6,6 +6,8 @@ const swaggerUi = require('swagger-ui-express');
 const { insertUser, pool, getUserByUsername } = require('./database.js');
 const bodyParser = require('body-parser');
 const userRoute = require('./src/routes/userRoute.js');
+const bookingRoute = require('./src/routes/bookingRoute.js');
+const courtRoute = require('./src/routes/courtRoute.js');
 const { compare: bcryptCompare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('./middleware/authenticate.js');
@@ -44,15 +46,16 @@ const swaggerOptions = {
     ],
     components: {
       securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
+        apikeyAuth: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'Authorization',
         },
       },
     },
     security: [
       {
-        bearerAuth: [],
+        apikeyAuth: [],
       },
     ],
   },
@@ -82,6 +85,8 @@ function generateToken(user) {
 
 // Route for API
 
+app.use('/booking', bookingRoute(pool));
+app.use('/courts', courtRoute(pool));
 app.use('/users' ,userRoute(pool));
 
 app.get('/userlist', authenticateToken, (req, res) => {
@@ -131,13 +136,15 @@ app.post('/users/login', async (req, res) => {
         // Passwords match, generate a token
         console.log("generateToken")
         const token = generateToken(user);
+        const userId = user.id;
         const expirationTime = 120;
         setTokenAndExpiration(token, expirationTime)
 
         //on every request check if expired
         checkTokenExpiration();
         // Send the token in the response
-        res.json({ success: true, token, message: 'Login successful' });
+        res.json({ success: true, token, userId, message: 'Login successful' });
+        
       } else {
         // Passwords don't match, deny access
         res.status(401).json({ success: false, message: 'Invalid password' });
@@ -169,5 +176,5 @@ app.use((req, res, next) => {
 
 // Start the server
 app.listen(port ,   () => {
-  console.log(`Server is running on https://courtmasterapp.azurewebsites.net/`);
+  console.log(`Server is running on http://localhost:3000/`);
 });
