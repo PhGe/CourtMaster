@@ -41,7 +41,7 @@ router.get('/all', authenticateToken, async (req, res) => {
     try {
       // Your booking logic goes here
       const result = await pool.query('SELECT * FROM courts');
-      console.log(result); // Log the query result for debugging purposes
+      //console.log(result); // Log the query result for debugging purposes
       res.json(result.rows); // Send the query result as a JSON response
     } catch (error) {
       console.error('Error during booking:', error);
@@ -54,11 +54,11 @@ router.get('/all', authenticateToken, async (req, res) => {
 
     try {
         // Query the database to retrieve existing time slots for the specified court
-        const timeSlotsQuery = await pool.query('SELECT time_slot FROM court_time_slots WHERE court_id = $1', [courtId]);
-
-        // Extract time slots from the query result
-        const availableTimeSlots = timeSlotsQuery.rows.map(row => row.time_slot);
-
+        const timeSlotsQuery = await pool.query('SELECT start_time, end_time FROM court_time_slots WHERE court_id = $1', [courtId]);
+        // Extract start and end times from the query result
+        console.log(timeSlotsQuery)
+        const availableTimeSlots = timeSlotsQuery.rows.map(row => `${row.start_time}-${row.end_time}`);
+        console.log(availableTimeSlots)
         // Send the list of available time slots as a JSON response
         res.json({ availableTimeSlots });
     } catch (error) {
@@ -66,6 +66,7 @@ router.get('/all', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 });
+
 
 
 

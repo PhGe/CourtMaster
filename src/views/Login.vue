@@ -38,16 +38,17 @@ export default {
   try {
     console.log("userdata: " + userData.username + "::: " + userData.password)
     const response = await axios.post('http://localhost:3000/users/login', userData);
-    // Handle the response as needed
-    console.log(response.data);
+    console.log('Login response:', response.data);
 
     if (response.data.success) {
       // Store the user and token in local state
       this.user = response.data.user;
       this.token = response.data.token;
-      this.$store.dispatch('login', { token: this.token, userId: response.data.userId }); 
+      console.log(userData.username)
+      this.$store.dispatch('login', { token: this.token, userId: response.data.userId, username: userData.username }); 
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);
+      localStorage.setItem('username', userData.username);
 
       // Redirect to /userlist only if login is successful
       this.$router.push('/userlist');
@@ -63,7 +64,9 @@ export default {
     }
   } catch (error) {
     console.error('Error logging in:', error);
-    alert("Falscher Login")
+    alert("Falscher Login");
+    // Redirect to login page or handle the error as appropriate
+    this.$router.push('/login');
   }
 },  
   },

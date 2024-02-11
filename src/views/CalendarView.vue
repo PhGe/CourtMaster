@@ -1,24 +1,36 @@
 <template>
+  <div class="headerstyle">
+    <Header></Header>
+    </div>
     <div>
       <h1>Calendar</h1>
-      <div>
-    <calendar></calendar>
-      </div>
-    </div>
-  </template>
+      <calendar></calendar>
+  </div>
+</template>
 
   <script>
-      import calendar from '../components/Calendar.vue'
+  import calendar from '../components/Calendar.vue'
+  import Header from '../components/Header.vue'
+  
   export default {
     name: 'CalendarView',
     components: {
-        calendar
-    }
-    };
-</script>
+      calendar,
+      Header
+    },
+  };
+  </script>
 
 
 <style scoped>
+
+.headerstyle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align items to the right side */
+  padding: 20px;
+}
+
 div {
   display: flex;
   flex-direction: column;

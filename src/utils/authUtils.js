@@ -3,8 +3,6 @@ let jwtToken = null;
 let tokenExpiration = null;
 let inactivityTimer = null;
 
-//God that was a lot of work fuck me
-
 // Save token and expiration time when logging in
 function setTokenAndExpiration(token, expirationTime) {
   jwtToken = token;
@@ -41,10 +39,10 @@ function checkTokenExpiration() {
   // Logout function
   function logout() {
     jwtToken = null;
-    console.log(jwtToken)
+    //console.log(jwtToken)
     tokenExpiration = null;
-  
-    // Redirect to the logout page or perform other logout actions
+    
+    // Redirect to the logout page or perform other logout action
     console.log("logged out!");
   }
   

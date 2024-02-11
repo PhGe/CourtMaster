@@ -2,19 +2,26 @@
     <div class="booking-window"
       :style="{ top: topPosition + 'px', left: leftPosition + 'px' }"
       @mousedown="startDrag">
+      <p>Selected Date: {{ selectedDate }}</p>
       <div class="booking-content">
         <h2>Buchen</h2>
+        <div v-if="bookingStatus === 'pending'">
+            <p>Booking Status: Pending</p>
+          </div>
+          <div v-else-if="bookingStatus === 'confirmed'">
+            <p>Booking Status: Confirmed</p>
+          </div>
         <p>Wähle einen Platz aus:</p>
         <div class="court-toggle">
           <button @click="toggleCourt(-1)">Previous</button>
           <span>{{ currentCourt }}</span>
           <button @click="toggleCourt(1)">Next</button>
         </div>
-        <div v-if="currentTimeslots !== 'No timeslots available' ">
-          <div class="form-group" v-for="timeSlot in currentTimeslots" :key="timeSlot">
-            <input type="radio" :id="timeSlot" :value="timeSlot" v-model="selectedTimeSlot">
-            <label :for="timeSlot">{{ timeSlot }}</label>
-          </div>
+        <div v-if="currentTimeslots !== 'No timeslots available'">
+            <div class="form-group" v-for="timeSlot in currentTimeslots" :key="timeSlot.startTime">
+                <input type="radio" :id="timeSlot.startTime" :value="timeSlot" v-model="selectedTimeSlot">
+                <label :for="timeSlot.startTime">{{ timeSlot.startTime }} - {{ timeSlot.endTime }}</label>
+            </div>
         </div>
         <div v-else>
             No timeslots available
@@ -30,11 +37,15 @@
   
   <script>
   import axios from 'axios';
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   
   export default {
     name: 'BookingWindow',
     props: {
+        selectedDate: { // Define selectedDate as a prop
+      type: String, // Change the type if necessary based on your data type
+      default: '' // Set a default value if needed
+    }
     },
     data() {
       return {
@@ -49,35 +60,49 @@
         localCourts: [],
         TimeSlots: [],
         selectedTimeSlot: null,
-        selectedDate: "2024-02-14",
-        userId: null
+        userId: null,
+        bookingStatus: 'pending', // Initialize booking status
+        availableTimeSlots: [],
+        bookingsFetched: false
       };
     },
     computed: {
-     ...mapGetters(['getUserId']),
+     ...mapGetters(['getUserId', 'getAvailableTimeSlots']),
       currentCourt() {
         return this.localCourts.length > 0 ? this.localCourts[this.currentCourtIndex].court_name : 'No courts available';
       },
       currentTimeslots() {
-    // Log for debugging purposes
-    
-    // Check if TimeSlots is defined and availableTimeSlots is an array
-    if (this.TimeSlots?.availableTimeSlots && Array.isArray(this.TimeSlots.availableTimeSlots)) {
-      // Log availableTimeSlots for debugging purposes
-      // Return availableTimeSlots
-      return this.TimeSlots.availableTimeSlots;
-    } else {
-      // Log a message if no time slots are available
-      //console.log('No available time slots');
-      // Return an empty array or null, depending on your application logic
-      return [];
-    }
-      }
+        if (this.availableTimeSlots && Array.isArray(this.availableTimeSlots)) {
+            const filteredTimeSlots = this.availableTimeSlots.filter(slot => slot.booking_status !== 'confirmed');
+            return filteredTimeSlots;
+        } else {
+            return [];
+        }
+        }
     },
     mounted() {
       this.getCourtData();
+      this.fetchBookings();
     },
     methods: {
+        ...mapActions(['updateAvailableTimeSlots']), // Add action for updating availableTimeSlots
+        async fetchBookings() {
+      try {
+        // Fetch bookings data from the backend
+        const authToken = localStorage.getItem('authToken');
+        const response = await axios.get('http://localhost:3000/booking/all', {
+            headers: {
+              'Authorization': authToken,
+            }
+          })
+        const bookings = response.data;
+        console.log(bookings)
+        // Filter out confirmed bookings
+        console.log("Timeslots:" + this.availableTimeSlots)
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+      }
+    },
       getCourtData() {
         const authToken = localStorage.getItem('authToken');
         axios.get('http://localhost:3000/courts/all', {
@@ -96,22 +121,68 @@
           });
       },
       fetchAvailableTimeSlots(courtIds) {
-        const currentCourtId = courtIds[this.currentCourtIndex];
-        const authToken = localStorage.getItem('authToken');
-        //axios.get(`http://localhost:3000/courts/${courtIds[0]}/availability`, {
-            axios.get(`http://localhost:3000/courts/${currentCourtId}/availability`, {
-            headers: {
-              'Authorization': authToken,
-            }
-          })
-          .then(response => {
-            this.TimeSlots = response.data;
+    const currentCourtId = courtIds[this.currentCourtIndex];
+    const authToken = localStorage.getItem('authToken');
+
+    // Fetch time slots from court_time_slots
+    axios.get(`http://localhost:3000/courts/${currentCourtId}/availability`, {
+        headers: {
+        'Authorization': authToken,
+        }
+    })
+    .then(response => {
+        this.TimeSlots = response.data;
+        console.log(this.TimeSlots)
+
+        // Fetch bookings for the selected court and date
+        axios.get(`http://localhost:3000/booking/availability`, {
+        params: {
+            courtId: currentCourtId,
+            date: this.selectedDate,
+        },
+        headers: {
+            'Authorization': authToken,
+        }
+        })
+        .then(bookingResponse => {
+            console.log(bookingResponse)
+            const bookedTimeSlots = bookingResponse.data;
+
+            console.log(bookedTimeSlots)
+
+            this.availableTimeSlots = this.TimeSlots.availableTimeSlots.map(slot => {
+                const [startTime, endTime] = slot.split('-');
+                const slotString = `${startTime}-${endTime}`;
+                console.log(slot.startTime)
+                console.log("Constructed slotString:", slotString);
+                console.log("SLOT:  "+slot);
+                const bookingStatus = bookedTimeSlots.includes(slotString) ? 'confirmed' : 'available';
+                console.log("Comparing time slots:", slotString, bookedTimeSlots.includes(slotString));
+
+                console.log(bookingStatus)
+                return {
+                    startTime: startTime,
+                    endTime: endTime,
+                    booking_status: bookingStatus,
+                };
+            });
+            // Filter out the confirmed bookings
+            console.log(this.availableTimeSlots)
+            const filteredTimeSlots = this.availableTimeSlots.filter(slot => slot.booking_status !== 'confirmed');
+            console.log(filteredTimeSlots)
+           // const availableTimeSlots = filteredTimeSlots.map(slot => slot.time_slot);
+            //console.log(availableTimeSlots)
+           // this.availableTimeSlots = availableTimeSlots;
             this.currentTimeslotIndex = Math.min(this.currentTimeslotIndex, this.TimeSlots.length - 1);
-          })
-          .catch(error => {
-            console.error('Error fetching timeslots:', error);
-          });
-      },
+        })
+        .catch(error => {
+            console.error('Error fetching bookings:', error);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching timeslots:', error);
+    });
+},
       toggleCourt(direction) {
         if (direction === -1) {
           this.currentCourtIndex = (this.currentCourtIndex - 1 + this.localCourts.length) % this.localCourts.length;
@@ -124,10 +195,11 @@
       confirmBooking() {
         const authToken = localStorage.getItem('authToken');
         if (this.selectedTimeSlot) {
+        const { startTime, endTime } = this.selectedTimeSlot;
         const bookingData = {
           userId: this.$store.getters.getUserId,
           date: this.selectedDate,
-          time: this.selectedTimeSlot,
+          time: `${startTime}-${endTime}`, // Combine startTime and endTime into a string
           courtId: this.localCourts[this.currentCourtIndex].court_id, // Include court ID based on your data structure
         };
         console.log(bookingData)
@@ -141,8 +213,13 @@
           .then((response) => {
             // Handle successful booking
             console.log('Booking confirmed:', response.data);
-            // Close booking window
+            this.bookingStatus = 'confirmed';
+            this.updateAvailableTimeSlots(this.selectedTimeSlot); // Dispatch action to update available time slots
+            console.log(this.availableTimeSlots)
+            this.availableTimeSlots = this.availableTimeSlots.filter(slot => slot !== this.selectedTimeSlot);
+            console.log(this.availableTimeSlots)
             this.isBookingWindowOpen = false;
+            
             // Update UI to reflect that the selected time slot is no longer available
             // You can remove the selected time slot from the available time slots array
           })

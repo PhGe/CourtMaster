@@ -1,23 +1,14 @@
 <!-- App.vue -->
 <template>
   <div>
-   <!-- <img alt="Vue logo" src="./assets/Tennisball.png">-->
-   <!--<HelloWorld msg="Welcome Tennis players du looser !!!!!!!"/>-->
-   <!-- <PlayerNames/>-->
    <router-view></router-view>
   </div>
 </template>
 
 <script>
- // import HelloWorld from './components/HelloWorld.vue';
- // import PlayerNames from './components/PlayerNames.vue';
 
 export default {
   name: 'App',
-  components: {
-     // HelloWorld,
-     // PlayerNames
-  }
 };
 
   </script>
@@ -29,7 +20,6 @@ export default {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
     
   }
   img{

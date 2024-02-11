@@ -34,7 +34,7 @@
 import BookingWindow from './BookingWindow.vue';
 
   export default {
-    name: 'CalendarView',
+    name: 'CalendarComponent',
     components:{
       BookingWindow,
     },
@@ -137,7 +137,7 @@ renderCalendar() {
     // Method to close booking window
     closeBookingWindow() {
       this.isBookingWindowOpen = false;
-      this.$forceUpdate();
+      //this.$forceUpdate();
     },
   },
 };

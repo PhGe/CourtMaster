@@ -100,9 +100,18 @@ router.post('/authenticate', async (req, res) => {
 });
 
 router.post('/authenticate-token', async (req, res) => {
-  // If the execution reaches here, it means the token is valid
-  res.json({ success: true, message: 'Token is valid' });
-  
+  try {
+    const token = req.body.token;
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Token is missing or invalid' });
+    }
+    // Perform token validation logic here
+    // If the token is valid, respond with success
+    res.json({ success: true, message: 'Token is valid' });
+  } catch (error) {
+    console.error('Error during token validation:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
 });
 
 

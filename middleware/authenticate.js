@@ -13,7 +13,7 @@ function extractUserId(req) {
   }
   try {
     const decodedToken = jwt.verify(token, 'your-secret-key');
-    console.log("AHUGA"+ decodedToken.userId)
+   // console.log("AHUGA"+ decodedToken.userId)
     return decodedToken.userId; // Extract user ID from the decoded token
   } catch (error) {
     console.error('Error extracting user ID:', error);
@@ -42,7 +42,7 @@ function authenticateToken(req, res, next) {
         return res.status(403).json({ success: false, message: 'Forbidden: Invalid token' });
       }
     }
-    console.log('Decoded user information:', user);
+    //console.log('Decoded user information:', user);
     // Continue to the next middleware or route
     next();
   });
