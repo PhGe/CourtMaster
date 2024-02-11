@@ -1,15 +1,9 @@
 <!-- Userlist.vue -->
 <template>
-  <div class="headerstyle">
-    <Header></Header>
-    </div>
-
-
+  <Header></Header>
     <div>
       <h1>Login Successfull!</h1>
-        <img src="../assets/Tennisball.png">
       <PlayerNames></PlayerNames>
-      <router-link to="/calendar" class="link">Calendar</router-link>
     </div>
   </template>
 
@@ -54,7 +48,7 @@ import Header from '../components/Header.vue'
   .headerstyle {
     display: flex;
     flex-direction: column;
-    align-items: flex-end; /* Align items to the right side */
+    align-items: stretch; /* Align items to the right side */
     padding: 20px;
   }
   

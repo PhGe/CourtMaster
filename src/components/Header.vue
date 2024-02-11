@@ -1,131 +1,101 @@
 <template>
     <div class="header-container">
-      <div class="profile-section">
-        <img src="../assets/10015419.png" alt="Profile Picture" class="profile-picture">
-        <div class="profile-menu">
-          <el-dropdown>
-            <span class="el-dropdown-link">
-                {{ username }}
-              <el-icon class="el-icon--right">
-                <arrow-down />
-              </el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item @click="handleMenuClick('profile')" >Profile</el-dropdown-item>
-                <el-dropdown-item @click="handleMenuClick('settings')">Settings</el-dropdown-item>
-                <el-dropdown-item @click="handleLogout">Logout</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
-      </div>
+      <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        :ellipsis="false"
+        @select="handleSelect"
+      >
+        <el-menu-item index="calendar" @click="goToRoute('calendar')">Calendar</el-menu-item>
+        <el-menu-item index="userlist" @click="goToRoute('userlist')">Userlist</el-menu-item>
+        <el-menu-item v-if="isAdmin" index="admin" @click="goToRoute('admin')">Admin</el-menu-item>
+        <div class="flex-grow" />
+  
+        <!-- Add more route links as needed -->
+        <el-sub-menu index="profile">
+          <template #title>{{ username }}</template>
+          <el-menu-item @click="goToRoute('bookings')">Bookings</el-menu-item>
+          <el-menu-item @click="goToRoute('settings')">Settings</el-menu-item>
+          <el-menu-item @click="handleLogout">Logout</el-menu-item>
+        </el-sub-menu>
+      </el-menu>
     </div>
   </template>
   
   <script>
-    import { logout } from '../utils/authUtils';
-
+  import { logout } from '../utils/authUtils';
+  import { mapGetters } from 'vuex';
+  
   export default {
     name: 'HeaderComponent',
     data() {
       return {
-        isProfileMenuOpen: false,
-        isBurgerMenuOpen: false,
         username: '',
+        activeIndex: '',
+        handleSelect: '',
       };
     },
+    computed: {
+    ...mapGetters(['getUsername', 'getUserRole']),
+    isAdmin() {
+      console.log("Role:" +this.getUserRole)
+      return this.getUserRole === 'admin';
+    }
+  },
     mounted() {
       this.username = localStorage.getItem('username');
     },
     methods: {
-      openProfileMenu() {
-        this.isProfileMenuOpen = true;
-      },
-      closeProfileMenu() {
-        this.isProfileMenuOpen = false;
-      },
-      toggleBurgerMenu() {
-        this.isBurgerMenuOpen = !this.isBurgerMenuOpen;
-      },
-      handleMenuClick(command) {
-        // Handle menu click based on the command
-        console.log('Menu item clicked:', command);
-      },
       handleLogout() {
- 
-      logout();
-      // Clear user session data
-      localStorage.removeItem('authToken');
-      // Optionally, redirect the user to the login page
-      this.$router.push('/login');
-    }
-    }
+        logout();
+        localStorage.removeItem('authToken');
+        this.$router.push('/login');
+      },
+      goToRoute(routeName) {
+        this.$router.push({ name: routeName });
+      },
+    },
   };
   </script>
   
   <style scoped>
   .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
+    background-color: #f0f0f0; /* Add a background color for the header */
+    border-radius: 20px;
+    padding: 10px 20px; /* Add padding to the header container */
   }
   
-  .profile-section {
-    display: flex;
-    align-items: center;
+  .flex-grow {
+    flex-grow: 1;
   }
   
-  .profile-picture {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
+  .el-menu-item {
+    margin-left: 20px; 
   }
   
-  .burger-menu {
-    cursor: pointer;
+  /* Style for menu items */
+  .el-menu-item,
+  .el-submenu__title {
+    color: #333; /* Set text color */
   }
   
-  .username {
-    cursor: pointer;
+  .el-menu-item:hover,
+  .el-submenu__title:hover {
+    background-color: #e0e0e0; /* Add background color on hover */
   }
   
-  .profile-menu {
-    position: relative;
+  /* Style for active menu item */
+  .el-menu-item.is-active,
+  .el-submenu.is-active > .el-submenu__title {
+    background-color: #007bff; /* Set active background color */
+    color: #fff; /* Set active text color */
   }
   
-  .profile-dropdown-menu,
-  .burger-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-    z-index: 1000;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px 0;
-    display: none;
-    min-width: 160px;
+  /* Style for submenu arrow */
+  .el-submenu__icon-arrow {
+    color: #555; /* Set color for submenu arrow */
   }
   
-  .profile-menu:hover .profile-dropdown-menu,
-  .burger-menu:hover .burger-dropdown-menu {
-    display: block;
-  }
-  
-  .profile-dropdown-menu li,
-  .burger-dropdown-menu li {
-    padding: 8px 20px;
-    cursor: pointer;
-    color: #333;
-  }
-  
-  .profile-dropdown-menu li:hover,
-  .burger-dropdown-menu li:hover {
-    background-color: #cd0f0f;
-  }
   </style>
   

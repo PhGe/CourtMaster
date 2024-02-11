@@ -26,9 +26,6 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-
-
-
 // Define Swagger options
 const swaggerOptions = {
   swaggerDefinition: {
@@ -158,6 +155,8 @@ app.post('/users/login', async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
+
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to the CourtMaster API. Available endpoint: users/all or /example');

@@ -99,6 +99,7 @@
         console.log(bookings)
         // Filter out confirmed bookings
         console.log("Timeslots:" + this.availableTimeSlots)
+        console.log('Bookings fetched:', bookings);
       } catch (error) {
         console.error('Error fetching bookings:', error);
       }

@@ -55,6 +55,26 @@ const bookingRoute = (pool) => {
         }
       });
 
+      router.get('/allByUser', authenticateToken, async (req, res) => {
+        try {
+          // Get the user ID from the query parameters
+          console.log(req.query)
+          const userId = req.query.userId;
+          console.log(userId)
+          // Query to get bookings associated with the user ID
+          const query = 'SELECT * FROM bookings WHERE user_id = $1';
+          const result = await pool.query(query, [userId]);
+          const bookings = result.rows;
+      
+          // Send the bookings data as a JSON response
+          res.json(bookings);
+        } catch (error) {
+          console.error('Error fetching bookings:', error);
+          res.status(500).send('Internal Server Error');
+        }
+      });
+      
+
     router.post('/book', authenticateToken, async (req, res) => {
         try {
           // Extract booking data from the request body
@@ -66,7 +86,7 @@ const bookingRoute = (pool) => {
           const [startTime, endTime] = time.split('-');
 
           
-          const bookingStatus = 'pending';
+          const bookingStatus = 'confirmed';
           
           // Save booking information to the database
           const query = `
@@ -90,6 +110,29 @@ const bookingRoute = (pool) => {
           res.status(500).json({ error: 'Failed to confirm booking' });
         }
       });
+
+    router.delete('/cancel/:bookingId', authenticateToken, async (req, res) => {
+      try {
+          const { bookingId } = req.params;
+  
+          // Define the SQL query to delete the booking with the provided booking ID
+          const query = `
+              DELETE FROM bookings
+              WHERE booking_id = $1
+          `;
+  
+          // Execute the SQL query
+          await pool.query(query, [bookingId]);
+  
+          // Send a success response to the client
+          res.status(200).json({ message: 'Booking canceled successfully' });
+      } catch (error) {
+          console.error('Error canceling booking:', error);
+          // Send an error response to the client
+          res.status(500).json({ error: 'Failed to cancel booking' });
+      }
+  });
+    
 
       /**
  * @swagger
@@ -133,6 +176,8 @@ const bookingRoute = (pool) => {
             res.status(500).json({ error: 'Failed to retrieve booked time slots' });
         }
         });
+
+    
 
   return router; // Return the router instance
 };

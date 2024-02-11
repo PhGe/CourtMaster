@@ -1,8 +1,6 @@
 <template>
-  <div class="headerstyle">
-    <Header></Header>
-    </div>
-    <div>
+  <Header></Header>
+    <div class="calendarDiv">
       <h1>Calendar</h1>
       <calendar></calendar>
   </div>
@@ -24,14 +22,8 @@
 
 <style scoped>
 
-.headerstyle {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Align items to the right side */
-  padding: 20px;
-}
 
-div {
+.calendarDiv {
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -42,5 +42,19 @@ async function getUserByUsername(username) {
   }
 }
 
+async function updateUserPassword(username, newPassword) {
+  try {
+    // Prepare the SQL query to update the user's password
+    const query = 'UPDATE users SET password_hash = $1 WHERE username = $2';
+    // Execute the query with the parameters
+    const result = await pool.query(query, [newPassword, username]);
+    // Return the result
+    return result.rows[0];
+  } catch (error) {
+    // Handle errors appropriately
+    console.error('Error updating user password:', error);
+    throw error;
+  }
+}
 
-module.exports = { pool, insertUser, getUserByUsername };
+module.exports = { pool, insertUser, getUserByUsername, updateUserPassword };

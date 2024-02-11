@@ -44,7 +44,6 @@ export default {
       // Store the user and token in local state
       this.user = response.data.user;
       this.token = response.data.token;
-      console.log(userData.username)
       this.$store.dispatch('login', { token: this.token, userId: response.data.userId, username: userData.username }); 
       // Store the token in localStorage
       localStorage.setItem('authToken', response.data.token);

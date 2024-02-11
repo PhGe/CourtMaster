@@ -5,14 +5,23 @@ import Userlist from '../views/Userlist.vue';
 import Login from '../views/Login.vue';
 import SignUp from '../views/SignUp.vue';
 import CalendarView from '../views/CalendarView.vue';
+import Settings from '../views/Settings.vue';
+import Bookings from '../views/Bookings.vue';
+import Admin from '../views/AdminView.vue';
+import Unauthorized from '../views/Unauthorized.vue';
 import axios from 'axios';
+import store from '@/store';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/userlist', component: Userlist, meta: { requiresAuth: true }, },
-  { path: '/signup', component: SignUp },
-  { path: '/login', component: Login },
-  { path: '/calendar', component: CalendarView, meta: { requiresAuth: true }, }
+  { path: '/', name: 'home', component: Home },
+  { path: '/userlist', name: 'userlist', component: Userlist, meta: { requiresAuth: true } },
+  { path: '/signup', name: 'signup', component: SignUp },
+  { path: '/login', name: 'login', component: Login },
+  { path: '/calendar', name: 'calendar', component: CalendarView, meta: { requiresAuth: true } },
+  { path: '/settings', name: 'settings', component: Settings, meta: { requiresAuth: true } },
+  { path: '/bookings', name: 'bookings', component: Bookings, meta: { requiresAuth: true } },
+  { path: '/admin', name: 'admin', component: Admin, meta: { requiresAuth: true, requiresAdmin: true } },
+  { path: '/unauthorized', name: 'unauthorized', component: Unauthorized}
 ];
 
 const router = createRouter({
@@ -20,9 +29,9 @@ const router = createRouter({
   routes,
 });
 
-// Navigation Guard
+// Route guard to check authentication token
 router.beforeEach(async (to, from, next) => {
-  console.log('Navigation Guard - Starting');
+  console.log('Authentication Route Guard - Starting');
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     console.log('Route requires authentication');
     const authToken = localStorage.getItem('authToken');
@@ -30,21 +39,21 @@ router.beforeEach(async (to, from, next) => {
     if (!authToken) {
       console.log('Token is missing, redirecting to login');
       next('/login');
-      return;
-    }
-    try {
-      const response = await axios.post('http://localhost:3000/users/authenticate-token', { token: authToken });
-      console.log('Token validation response:', response.data);
-      if (response.data && response.data.success) {
-        console.log('Token is valid');
-        next();
-      } else {
-        console.log('Token is invalid or expired, redirecting to login');
+    } else {
+      try {
+        const tokenResponse = await axios.post('http://localhost:3000/users/authenticate-token', { token: authToken });
+        console.log('Token validation response:', tokenResponse.data);
+        if (tokenResponse.data && tokenResponse.data.success) {
+          console.log('Token is valid');
+          next();
+        } else {
+          console.log('Token is invalid or expired, redirecting to login');
+          next('/login');
+        }
+      } catch (error) {
+        console.error("Error validating token:", error);
         next('/login');
       }
-    } catch (error) {
-      console.error("Error validating token:", error);
-      next('/login');
     }
   } else {
     console.log('Route does not require authentication');
@@ -52,6 +61,44 @@ router.beforeEach(async (to, from, next) => {
   }
 });
 
+// Route guard to check admin role
+router.beforeEach(async (to, from, next) => {
+  console.log('Admin Role Route Guard - Starting');
+  if (to.matched.some((record) => record.meta.requiresAdmin)) {
+
+    console.log('Route requires admin role');
+
+    const authToken = localStorage.getItem('authToken');
+
+    console.log('Auth token:', authToken);
+
+    try {
+      // Get the userId from Vuex store
+      const userId = store.getters.getUserId;
+      const userDetailsResponse = await axios.get(`http://localhost:3000/users/role/${userId}`, {
+        headers: {
+          'Authorization': authToken,
+        }
+      });
+      console.log('User details response:', userDetailsResponse.data);
+      const userRole = userDetailsResponse.data.role;
+      console.log('User role:', userRole);
+      if (userRole === 'admin') {
+        console.log('User is admin, proceeding to route');
+        next();
+      } else {
+        console.log('User is not admin, redirecting to unauthorized page');
+        next('/unauthorized');
+      }
+    } catch (error) {
+      console.error("Error retrieving user details:", error);
+      next('/login');
+    }
+  } else {
+    console.log('Route does not require admin role');
+    next();
+  }
+});
 
 
 export default router;

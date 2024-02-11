@@ -2,6 +2,8 @@
 const express = require('express');
 const authenticateToken = require('../../middleware/authenticate.js');
 const router = express.Router();
+const { getUserByUsername,updateUserPassword } = require('../../database.js');
+const bcrypt = require('bcryptjs');
 
 /**
  * @swagger
@@ -34,6 +36,7 @@ const router = express.Router();
 // Define a route to get user data
 
 const userRoute = (pool) => {
+  
   
 // Define a route to get all users
 router.get('/all',authenticateToken, async (req, res) => {
@@ -83,6 +86,26 @@ router.get('/names', authenticateToken,async (req, res) => {
   }
 });
 
+router.get('/role/:id', authenticateToken, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Query the database to get the role of the user by their ID
+    const result = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
+
+    if (result.rows.length > 0) {
+      const userRole = result.rows[0].role;
+      res.json({ role: userRole });
+    } else {
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching user role:', error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+
 router.post('/authenticate', async (req, res) => {
   try {
     console.log(req.body.token)
@@ -111,6 +134,48 @@ router.post('/authenticate-token', async (req, res) => {
   } catch (error) {
     console.error('Error during token validation:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+router.post('/change-password', authenticateToken, async (req, res) => {
+  const { username, currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  try {
+    // Retrieve the user from the database by username
+    const user = await getUserByUsername(username);
+
+    if (user && user.password_hash) {
+      // Check if the current password matches the hashed password in the database
+      const currentPasswordMatch = await bcrypt.compare(currentPassword, user.password_hash);
+
+      if (currentPasswordMatch) {
+        // Verify if the new password matches the confirmed new password
+        if (newPassword === confirmNewPassword) {
+          // Hash the new password
+          const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+          // Update the user's password in the database
+          // You need to implement a function like updateUserPassword(username, newPassword)
+          await updateUserPassword(username, hashedNewPassword);
+
+          // Respond with a success message
+          res.json({ success: true, message: 'Password changed successfully' });
+        } else {
+          // Respond with an error message if the new passwords don't match
+          res.status(400).json({ success: false, message: 'New passwords do not match' });
+        }
+      } else {
+        // Respond with an error message if the current password is incorrect
+        res.status(401).json({ success: false, message: 'Incorrect current password' });
+      }
+    } else {
+      // Respond with an error message if the user is not found or password hash is missing
+      res.status(404).json({ success: false, message: 'User not found or password hash missing' });
+    }
+  } catch (error) {
+    // Respond with an error message if an error occurs during password change process
+    console.error('Error changing password:', error.message);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 
