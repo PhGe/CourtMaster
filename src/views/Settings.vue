@@ -3,7 +3,7 @@
   <h1 class="page-title">Settings</h1>
   <div class="settings-container">
     <el-card class="password-card">
-      <h3 slot="header">Change Password</h3>
+      <h3 slot="header">Change Password </h3>
       <el-form ref="passwordForm" :model="passwordForm" class="password-form">
         <el-form-item label="Current Password" prop="currentPassword" class="form-item">
           <el-input type="password" v-model="passwordForm.currentPassword" placeholder="Enter current password"></el-input>
