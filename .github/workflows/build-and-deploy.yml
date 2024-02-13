@@ -23,13 +23,13 @@ jobs:
     steps:
     - name: Debug API_BASE_URL
       run: echo "$API_BASE_URL , $DATABASE_URL"
-
+    
     - name: Debug API_BASE_URL
       run: echo `${{ secrets.API_BASE_URL }}`
-
+    
     - name: Debug API_BASE_URL
       run: echo "API_BASE_URL = $API_BASE_URL"
-
+    
     - name: Debug VAR_BASE_URL
       run: echo "VAR_BASE_URL = $VAR_BASE_URL"
 
