@@ -64,7 +64,7 @@
         bookingStatus: 'pending', // Initialize booking status
         availableTimeSlots: [],
         bookingsFetched: false,
-        apiUrl: process.env.API_BASE_URL || 'hlocalhost:3000ttp://' // Default to localhost
+        apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com' // Default to localhost
       };
     },
     computed: {
