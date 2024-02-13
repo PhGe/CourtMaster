@@ -343,6 +343,7 @@ addNewTimeslot(court) {
     if (!this.checkForOverlappingTimeslots(this.editedCourt.timeSlots)) {
         // Display an alert or handle the overlapping timeslots as needed
         console.log("Overlapping timeslots detected. Please resolve before updating.");
+        alert("Overlapping timeslots detected. Please resolve before updating.");
         return; // Exit the method without updating the court
     }
 
@@ -402,7 +403,7 @@ checkForOverlappingTimeslots(timeslots) {
   console.log("Test")
     if (!Array.isArray(timeslots) || timeslots.length === 0) {
         console.log("test2")
-        return false; // Return false if timeslots is not defined or empty
+        return true; // Return false if timeslots is not defined or empty
     }
 
     // Convert selected timeslots to start and end times for easier comparison
