@@ -10,6 +10,7 @@ permissions:
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   API_BASE_URL: ${{ secrets.API_BASE_URL }}
+  VAR_BASE_URL: ${{ vars.API_BASE_URL }}
 
 jobs:
   
@@ -28,6 +29,9 @@ jobs:
 
     - name: Debug API_BASE_URL
       run: echo "API_BASE_URL = $API_BASE_URL"
+
+    - name: Debug VAR_BASE_URL
+      run: echo "VAR_BASE_URL = $VAR_BASE_URL"
 
     - name: Checkout Repository
       uses: actions/checkout@v3
