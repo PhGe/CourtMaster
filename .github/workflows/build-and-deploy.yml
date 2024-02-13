@@ -9,6 +9,7 @@ permissions:
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  API_BASE_URL: ${{ secrets.API_BASE_URL }}
 
 jobs:
   
@@ -19,6 +20,9 @@ jobs:
       contents: write
 
     steps:
+    - name: Debug API_BASE_URL
+      run: echo "API_BASE_URL: $API_BASE_URL"
+
     - name: Checkout Repository
       uses: actions/checkout@v3
 
@@ -48,6 +52,10 @@ jobs:
         name: dist
         path: ./dist
 
+      
+
+    
+
 
 
 
@@ -71,9 +79,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-
-
 
   deploy-production:
     runs-on: ubuntu-latest
