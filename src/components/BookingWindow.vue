@@ -63,7 +63,8 @@
         userId: null,
         bookingStatus: 'pending', // Initialize booking status
         availableTimeSlots: [],
-        bookingsFetched: false
+        bookingsFetched: false,
+        apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       };
     },
     computed: {
@@ -90,7 +91,7 @@
       try {
         // Fetch bookings data from the backend
         const authToken = localStorage.getItem('authToken');
-        const response = await axios.get('http://localhost:3000/booking/all', {
+        const response = await axios.get(`${this.apiUrl}/booking/all`, {
             headers: {
               'Authorization': authToken,
             }
@@ -106,7 +107,7 @@
     },
       getCourtData() {
         const authToken = localStorage.getItem('authToken');
-        axios.get('http://localhost:3000/courts/all', {
+        axios.get(`${this.apiUrl}/courts/all`, {
             headers: {
               'Authorization': authToken,
             }
@@ -126,7 +127,7 @@
     const authToken = localStorage.getItem('authToken');
 
     // Fetch time slots from court_time_slots
-    axios.get(`http://localhost:3000/courts/${currentCourtId}/availability`, {
+    axios.get(`${this.apiUrl}/courts/${currentCourtId}/availability`, {
         headers: {
         'Authorization': authToken,
         }
@@ -136,7 +137,7 @@
         console.log(this.TimeSlots)
 
         // Fetch bookings for the selected court and date
-        axios.get(`http://localhost:3000/booking/availability`, {
+        axios.get(`${this.apiUrl}/booking/availability`, {
         params: {
             courtId: currentCourtId,
             date: this.selectedDate,
@@ -206,7 +207,7 @@
         console.log(bookingData)
         // Send bookingData to backend using an HTTP POST request
         axios
-          .post('http://localhost:3000/booking/book', bookingData, {
+          .post(`${this.apiUrl}/booking/book`, bookingData, {
             headers: {
               'Authorization': authToken,
             }

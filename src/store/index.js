@@ -2,6 +2,12 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 
+let API_BASE_URL = 'http://localhost:3000';
+
+if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
+  API_BASE_URL = process.env.API_BASE_URL;
+}
+
 export default createStore({
   state: {
     authToken: null,
@@ -46,7 +52,7 @@ export default createStore({
   actions: {
     async login({ commit }, { token, userId, username }) {
       try {
-        const response = await fetch(`http://localhost:3000/users/role/${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/users/role/${userId}`, {
           headers: {
             Authorization: token,
           },

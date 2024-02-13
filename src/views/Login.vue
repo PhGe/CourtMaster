@@ -25,7 +25,8 @@ export default {
     return {
       username: '',
       password: '',
-      token: null
+      token: null,
+      apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
     };
   },
   methods: {
@@ -37,7 +38,7 @@ export default {
 
   try {
     console.log("userdata: " + userData.username + "::: " + userData.password)
-    const response = await axios.post('http://localhost:3000/users/login', userData);
+    const response = await axios.post(`${this.apiUrl}/users/login`, userData);
     console.log('Login response:', response.data);
 
     if (response.data.success) {

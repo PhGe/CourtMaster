@@ -33,6 +33,7 @@
       return {
         bookings: [],
         userId: null,
+        apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       };
     },
     created() {
@@ -47,7 +48,7 @@
         const authToken = localStorage.getItem('authToken');
         const userId = this.$store.getters.getUserId;
         console.log(userId)
-        const response = await axios.get('http://localhost:3000/booking/allByUser', {
+        const response = await axios.get(`${this.apiUrl}/booking/allByUser`, {
           headers: {
             'Authorization': authToken,
           },
@@ -66,7 +67,7 @@
       try {
         const authToken = localStorage.getItem('authToken');
         // Make a DELETE request to cancel the booking with the provided booking ID
-        await axios.delete(`http://localhost:3000/booking/cancel/${bookingId}`, {
+        await axios.delete(`${this.apiUrl}/booking/cancel/${bookingId}`, {
           headers: {
             'Authorization': authToken,
           }

@@ -27,7 +27,7 @@
           console.log(authToken)
   
           // Make a request to /authenticate with the token
-          const responseAuthenticate = await fetch('http://localhost:3000/users/authenticate', {
+          const responseAuthenticate = await fetch(`${this.apiUrl}/users/authenticate`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -47,7 +47,7 @@
       async fetchUserData(authToken) {
         try {
           // Make an authenticated request to get user data using the obtained token
-          const responseUserData = await fetch('http://localhost:3000/users/all', {
+          const responseUserData = await fetch(`${this.apiUrl}/users/all`, {
             headers: {
               'Authorization': authToken,
             },
@@ -71,6 +71,7 @@
     data() {
       return {
         users: [], // This is where you store the fetched users
+        apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       };
     },
     mounted() {

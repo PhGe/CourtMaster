@@ -41,7 +41,8 @@ export default {
       },
       loading: false,
       errorMessage: '',
-      successMessage: ''
+      successMessage: '',
+      apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
     };
   },
   methods: {
@@ -61,7 +62,7 @@ export default {
         // Send a POST request to the server to change the password
         const authToken = localStorage.getItem('authToken');
         const username = localStorage.getItem('username')
-        const response = await axios.post('http://localhost:3000/users/change-password', {
+        const response = await axios.post(`${this.apiUrl}/users/change-password`, {
           username: username, // You need to replace 'username' with the actual username of the logged-in user
           currentPassword,
           newPassword,

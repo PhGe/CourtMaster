@@ -31,6 +31,7 @@
         username: '',
         password: '',
         confirmPassword: '',
+        apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       };
     },
     methods: {
@@ -57,7 +58,7 @@
     console.log(userData)
       // Make an HTTP request to your server
       try {
-        const response = await axios.post('http://localhost:3000/users/signup', userData);
+        const response = await axios.post(`${this.apiUrl}/users/signup`, userData);
 
         // Handle the response as needed
         console.log(response.data);

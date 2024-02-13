@@ -31,7 +31,8 @@
     },
     data() {
       return {
-        bookings: []
+        bookings: [],
+        apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       };
     },
     created() {
@@ -40,7 +41,7 @@
     methods: {
       async fetchBookings() {
         try {
-          const response = await axios.get('http://localhost:3000/booking/all', {
+          const response = await axios.get(`${this.apiUrl}/booking/all`, {
             headers: {
               'Authorization': this.authToken,
             }
@@ -52,7 +53,7 @@
       },
       async cancelBooking(bookingId) {
         try {
-          await axios.delete(`http://localhost:3000/booking/cancel/${bookingId}`, {
+          await axios.delete(`${this.apiUrl}/booking/cancel/${bookingId}`, {
             headers: {
               'Authorization': this.authToken,
             }

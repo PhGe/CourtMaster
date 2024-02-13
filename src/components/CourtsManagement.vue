@@ -166,6 +166,7 @@
       isEditing: false,
       isCreating: false,
       selectedTimeslots: [], // Array to hold selected timeslots
+      apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
       }
     },
     created() {
@@ -182,7 +183,7 @@
       async fetchCourts() {
         try {
           const authToken = localStorage.getItem('authToken');
-          const response = await axios.get('http://localhost:3000/courts/all', {
+          const response = await axios.get(`${this.apiUrl}/courts/all`, {
             headers: {
               'Authorization': authToken,
             }
@@ -208,7 +209,7 @@
       // Fetch court details based on court ID
       const authToken = localStorage.getItem('authToken');
       console.log(court.court_id)
-      const response = await axios.get(`http://localhost:3000/courts/all/${court.court_id}`,{
+      const response = await axios.get(`${this.apiUrl}/courts/all/${court.court_id}`,{
       headers: {
         'Authorization': authToken,
       },
@@ -228,7 +229,7 @@
     const authToken = localStorage.getItem('authToken');
     const unselectedTimeslots = this.editedCourt.timeSlots.filter(slot => this.selectedTimeslots.includes(slot));
 
-    await axios.post(`http://localhost:3000/courts/delete-timeslots/${this.editedCourt.court_id}`, { unselectedTimeslots }, {
+    await axios.post(`${this.apiUrl}/courts/delete-timeslots/${this.editedCourt.court_id}`, { unselectedTimeslots }, {
             headers: {
                 'Authorization': authToken,
             }
@@ -236,7 +237,7 @@
 
     console.log("UNSELECTED:   " +unselectedTimeslots)
 
-    await axios.put(`http://localhost:3000/courts/edit/${this.editedCourt.court_id}`, this.editedCourt, {
+    await axios.put(`${this.apiUrl}/courts/edit/${this.editedCourt.court_id}`, this.editedCourt, {
       headers: {
         'Authorization': authToken,
       }
@@ -263,7 +264,7 @@
           const authToken = localStorage.getItem('authToken');
           console.log("Delete Court: " + court);
           console.log("Delete Court: " + court.court_id);
-          await axios.delete(`http://localhost:3000/courts/delete/${court.court_id}`,
+          await axios.delete(`${this.apiUrl}/courts/delete/${court.court_id}`,
           {
             headers: {
             'Authorization': authToken,
@@ -277,7 +278,7 @@
       async createCourt() {
         try {
         const authToken = localStorage.getItem('authToken');
-          await axios.post('http://localhost:3000/courts/new',  this.newCourt , {
+          await axios.post(`${this.apiUrl}/courts/new`,  this.newCourt , {
             headers: {
               'Authorization': authToken,
             }
@@ -377,7 +378,7 @@ addNewTimeslot(court) {
     console.log(timeslotData)
     // Make the API call to add the timeslot
     const authToken = localStorage.getItem('authToken');
-    axios.post(`http://localhost:3000/courts/add-timeslots/${court.court_id}`, {
+    axios.post(`${this.apiUrl}/courts/add-timeslots/${court.court_id}`, {
             startTime: `${startHour}:${startMinute}:00`,
             endTime: `${endHour}:${endMinute}:00`
         }, {

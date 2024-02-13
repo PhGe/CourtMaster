@@ -29,6 +29,13 @@ const router = createRouter({
   routes,
 });
 
+
+let API_BASE_URL = 'http://localhost:3000';
+
+if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
+  API_BASE_URL = process.env.API_BASE_URL;
+}
+
 // Route guard to check authentication token
 router.beforeEach(async (to, from, next) => {
   console.log('Authentication Route Guard - Starting');
@@ -41,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
       next('/login');
     } else {
       try {
-        const tokenResponse = await axios.post('http://localhost:3000/users/authenticate-token', { token: authToken });
+        const tokenResponse = await axios.post(`${API_BASE_URL}/users/authenticate-token`, { token: authToken });
         console.log('Token validation response:', tokenResponse.data);
         if (tokenResponse.data && tokenResponse.data.success) {
           console.log('Token is valid');
@@ -76,7 +83,7 @@ router.beforeEach(async (to, from, next) => {
       // Get the userId from Vuex store
       const userId = store.getters.getUserId;
       console.log(userId)
-      const userDetailsResponse = await axios.get(`http://localhost:3000/users/role/${userId}`, {
+      const userDetailsResponse = await axios.get(`${API_BASE_URL}/users/role/${userId}`, {
         headers: {
           'Authorization': authToken,
         }

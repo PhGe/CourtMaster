@@ -64,6 +64,13 @@ module.exports = swaggerOptions;
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
+let API_BASE_URL = 'http://localhost:3000';
+
+if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
+  API_BASE_URL = process.env.API_BASE_URL;
+}
+
+
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -175,5 +182,5 @@ app.use((req, res, next) => {
 
 // Start the server
 app.listen(port ,   () => {
-  console.log(`Server is running on http://localhost:3000/`);
+  console.log(`Server is running on ${API_BASE_URL}`);
 });
