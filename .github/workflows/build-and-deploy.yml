@@ -21,7 +21,13 @@ jobs:
 
     steps:
     - name: Debug API_BASE_URL
-      run: echo "API_BASE_URL: $API_BASE_URL"
+      run: echo "$API_BASE_URL"
+
+    - name: Debug API_BASE_URL
+      run: echo `${{ secrets.API_BASE_URL }}`
+
+    - name: Debug API_BASE_URL
+      run: echo "API_BASE_URL = $API_BASE_URL"
 
     - name: Checkout Repository
       uses: actions/checkout@v3
