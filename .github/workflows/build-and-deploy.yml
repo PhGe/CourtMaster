@@ -101,10 +101,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           artifact_name: dist
         env:
-          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}#
+          Var_BASE_URL: ${{ vars.API_BASE_URL }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Echo URL and Database URL
-        run: echo "API_BASE_URL = $API_BASE_URL , DATABASE_URL = $DATABASE_URL"
+        run: echo "API_BASE_URL = $API_BASE_URL , DATABASE_URL = $DATABASE_URL, Var_BASE_URL = $Var_BASE_URL"
       
 
     environment:
