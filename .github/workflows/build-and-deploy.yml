@@ -102,6 +102,8 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+
 
     runs-on: ubuntu-latest
     steps: 
