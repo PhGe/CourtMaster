@@ -42,7 +42,7 @@ export default {
       loading: false,
       errorMessage: '',
       successMessage: '',
-      apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com' // Default to localhost
+      apiUrl: process.env.API_BASE_URL || 'http://localhost:3000' // Default to localhost
     };
   },
   methods: {
