@@ -102,6 +102,7 @@ jobs:
           artifact_name: dist
         env:
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          run: echo "API_BASE_URL = $API_BASE_URL \\$API_BASE_URL , $DATABASE_URL"
 
     environment:
       name: production
