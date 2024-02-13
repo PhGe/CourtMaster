@@ -9,6 +9,19 @@
 
 export default {
   name: 'App',
+  created() {
+    const authToken = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+    const userRole = localStorage.getItem('userRole');
+
+    if (authToken && userId && username && userRole) {
+      this.$store.commit('setAuthToken', authToken);
+      this.$store.commit('setUserId', userId);
+      this.$store.commit('setUsername', username);
+      this.$store.commit('setUserrole', userRole);
+    }
+  }
 };
 
   </script>

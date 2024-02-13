@@ -1,11 +1,12 @@
 // client/store.js
 import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
 export default createStore({
   state: {
     authToken: null,
     userId: null,
-    username: null, // Initialize username state property
+    username: null,
     userrole: null,
     availableTimeSlots: [],
   },
@@ -81,4 +82,5 @@ export default createStore({
     getAvailableTimeSlots: (state) => state.availableTimeSlots,
     getUserRole: (state) => state.userrole,
   },
+  plugins: [createPersistedState()],
 });

@@ -75,6 +75,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       // Get the userId from Vuex store
       const userId = store.getters.getUserId;
+      console.log(userId)
       const userDetailsResponse = await axios.get(`http://localhost:3000/users/role/${userId}`, {
         headers: {
           'Authorization': authToken,
