@@ -20,6 +20,8 @@ jobs:
     permissions:
       contents: write
 
+    environment: Production
+
     steps:
     - name: Debug API_BASE_URL
       run: echo "$API_BASE_URL , $DATABASE_URL"
