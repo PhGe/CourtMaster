@@ -2,7 +2,7 @@
 import { createStore } from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
+let API_BASE_URL = 'http://localhost:3000';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
   API_BASE_URL = process.env.API_BASE_URL;

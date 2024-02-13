@@ -13,6 +13,7 @@
         </div>
         <div class="booking-card-footer">
           <el-button type="danger" @click="cancelBooking(booking.booking_id)">Cancel Booking</el-button>
+          <el-button type="primary" @click="generateInvoice(booking)">Generate Invoice</el-button>
         </div>
       </el-card>
     </div>
@@ -20,6 +21,8 @@
   
   <script>
   import axios from 'axios';
+  import jsPDF from 'jspdf'; // Import jsPDF
+
   
   export default {
     name: 'BookingsList',
@@ -64,6 +67,21 @@
           console.error('Error canceling booking:', error);
         }
       },
+      generateInvoice(booking) {
+    try {
+      const doc = new jsPDF(); // Create a new instance of jsPDF
+      doc.text('Invoice', 105, 10, { align: 'center' });
+      doc.text(`Booking ID: ${booking.booking_id}`, 20, 30);
+      doc.text(`User ID: ${booking.user_id}`, 20, 40);
+      doc.text(`Booking Date: ${booking.booking_date}`, 20, 50);
+      doc.text(`Time Slot: ${booking.booking_starttime}-${booking.booking_endtime}`, 20, 60);
+      doc.text(`Court ID: ${booking.court_id}`, 20, 70);
+      doc.save(`invoice_${booking.booking_id}.pdf`);
+      console.log(`Invoice generated for booking ID: ${booking.booking_id}`);
+    } catch (error) {
+      console.error('Error generating invoice:', error);
+    }
+  },
     }
   };
   </script>

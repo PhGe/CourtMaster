@@ -39,7 +39,7 @@
     computed: {
     ...mapGetters(['getUsername', 'getUserRole']),
     isAdmin() {
-      console.log("Role:" +this.getUserRole)
+      console.log("Roles:" +this.getUserRole)
       return this.getUserRole === 'admin';
     }
   },
