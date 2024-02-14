@@ -189,7 +189,7 @@
       const encodedLocation = encodeURIComponent(location);
       
       // Construct the Google Maps URL with the encoded location
-      return `https://www.google.com/maps/embed/v1/place?key=AIzaSyDOfwLpf7bLzn5b4_iHvvITnDWZW5qAV4M&q=${encodedLocation}`;
+      return `https://www.google.com/maps/embed/v1/place?key=AIzaSyDOfwLpf7bLzn5b4_iHvvITnDWZW5qAV4M&q=${encodedLocation}&maptype=satellite`;
     },
       closeEditCard() {
       this.isEditing = false;
