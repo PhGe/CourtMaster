@@ -18,6 +18,16 @@
             <p><strong>Court Type:</strong> {{ court.court_type }}</p>
             <p><strong>Created At:</strong> {{ court.created_at }}</p>
             <p><strong>Location:</strong> {{ court.location }}</p>
+                    <!-- Embedded Google Maps -->
+                    
+        <iframe
+        width="100%"
+        height="300"
+        frameborder="0"
+        style="border:0"
+        :src="getGoogleMapsUrl(court.location)"
+        allowfullscreen>
+    </iframe>
             <p><strong>Capacity:</strong> {{ court.capacity }}</p>
             <p><strong>Available:</strong> {{ court.available ? 'Yes' : 'No' }}</p>
             <div class="timeslots-container">
@@ -174,6 +184,13 @@
       this.fetchCourts();
     },
     methods: {
+      getGoogleMapsUrl(location) {
+      // Encode the location string
+      const encodedLocation = encodeURIComponent(location);
+      
+      // Construct the Google Maps URL with the encoded location
+      return `https://www.google.com/maps/embed/v1/place?key=AIzaSyDOfwLpf7bLzn5b4_iHvvITnDWZW5qAV4M&q=${encodedLocation}`;
+    },
       closeEditCard() {
       this.isEditing = false;
       },
