@@ -333,50 +333,43 @@
       // Check if the timeslot is selected
       return this.selectedTimeslots.includes(timeslot);
       },
-addNewTimeslot(court) {
-
-  if (!this.editedCourt || !this.editedCourt.timeSlots) {
-        console.error('Invalid editedCourt or timeSlots property is missing.');
-        return;
-    }
-    
-    if (!this.checkForOverlappingTimeslots(this.editedCourt.timeSlots)) {
-        // Display an alert or handle the overlapping timeslots as needed
-        console.log("Overlapping timeslots detected. Please resolve before updating.");
-        alert("Overlapping timeslots detected. Please resolve before updating.");
-        return; // Exit the method without updating the court
-    }
-
-    console.log(court)
-    console.log(court.court_id)
-    // Extract start and end times from the newTimeslot object
+      addNewTimeslot(court) {
     const { startHour, startMinute, endHour, endMinute } = this.newTimeslot;
 
-    // Convert start and end times to numbers for comparison
-    const startTime = parseInt(startHour) * 60 + parseInt(startMinute);
-    const endTime = parseInt(endHour) * 60 + parseInt(endMinute);
+    // Check if start time is equal to end time
+    if (startHour === endHour && startMinute === endMinute) {
+        alert("Start time cannot be equal to end time");
+        return;
+    }
 
     const newTimeslotString = `${startHour}:${startMinute}:00-${endHour}:${endMinute}:00`;
 
-      // Check if the new timeslot already exists for the court
-      if (this.editedCourt.timeSlots.includes(newTimeslotString)) {
-          console.log("This timeslot already exists for the court.");
-          alert("This timeslot already exists for the court.");
-          return; // Exit the method without adding the timeslot
-      }
-
-    // Check if start time is before end time
-    if (startTime >= endTime) {
-        // If start time is not before end time, show an error message or handle the validation appropriately
-        alert("Start time must be before end time");
+    // Check if the new timeslot already exists for the court
+    if (court.timeSlots.includes(newTimeslotString)) {
+        alert("This timeslot already exists for the court.");
         return;
     }
-     // Construct the timeslot data to be sent to the server
-     const timeslotData = {
-        startTime: `${startHour}:${startMinute}:00`,
-        endTime: `${endHour}:${endMinute}:00`
-    };
-    console.log(timeslotData)
+
+    // Check if the new timeslot conflicts with existing timeslots
+    const conflictsExist = court.timeSlots.some(slot => {
+        const [existingStart, existingEnd] = slot.split('-');
+        const [newStart, newEnd] = newTimeslotString.split('-');
+        
+        return (
+            (newStart >= existingStart && newStart < existingEnd) || // New timeslot starts within existing timeslot
+            (newEnd > existingStart && newEnd <= existingEnd) ||     // New timeslot ends within existing timeslot
+            (newStart <= existingStart && newEnd >= existingEnd)     // New timeslot fully encompasses existing timeslot
+        );
+    });
+
+    if (conflictsExist) {
+        alert("The new timeslot conflicts with existing timeslots.");
+        return;
+    }
+
+    // Add the new timeslot to the editedCourt object
+    this.editedCourt.timeSlots.push(newTimeslotString);
+
     // Make the API call to add the timeslot
     const authToken = localStorage.getItem('authToken');
     axios.post(`${this.apiUrl}/courts/add-timeslots/${court.court_id}`, {
@@ -388,8 +381,6 @@ addNewTimeslot(court) {
             }
         })
         .then(response => {
-            // Update the editedCourt object with the new timeslot
-            this.editedCourt.timeSlots.push(newTimeslotString);
             this.fetchCourts(); // Fetch updated courts list
             console.log("Timeslot added successfully:", response.data);
             console.log(this.editedCourt);
@@ -398,37 +389,7 @@ addNewTimeslot(court) {
             console.error("Error adding timeslot:", error);
             // Handle the error as needed
         });
-      },
-checkForOverlappingTimeslots(timeslots) {
-  console.log("Test")
-    if (!Array.isArray(timeslots) || timeslots.length === 0) {
-        console.log("test2")
-        return true; // Return false if timeslots is not defined or empty
-    }
-
-    // Convert selected timeslots to start and end times for easier comparison
-    const selectedTimeslotRanges = timeslots.map(slot => {
-        const [start, end] = slot.split('-'); // This should be timeslots, not this.timeslots
-        return { start, end };
-    });
-    console.log(selectedTimeslotRanges)
-    // Iterate through each selected timeslot and compare with others
-    for (let i = 0; i < selectedTimeslotRanges.length; i++) {
-        for (let j = i + 1; j < selectedTimeslotRanges.length; j++) {
-            const slot1 = selectedTimeslotRanges[i];
-            const slot2 = selectedTimeslotRanges[j];
-            console.log(slot1)
-            console.log(slot2)
-            // Check for overlapping condition: start2 < end1 && end2 > start1
-            if (slot2.start <= slot1.end && slot2.end >= slot1.start) {
-                return true; // Overlapping timeslots found
-            }
-        }
-    }
-
-    return false; // No overlapping timeslots found
-},
-
+    },
 
     },
 
