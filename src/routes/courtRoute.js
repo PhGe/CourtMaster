@@ -142,22 +142,32 @@ router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
       const { court_id } = req.params;
       console.log(court_id)
       // Define the SQL query to delete the booking with the provided booking ID
-      const query = `
-          DELETE FROM courts
-          WHERE court_id = $1
+      // Define the SQL queries to delete bookings and court
+      const queryBookings = `
+      DELETE FROM bookings
+      WHERE court_id = $1
       `;
 
-      // Execute the SQL query
-      await pool.query(query, [court_id]);
+      const queryCourts = `
+      DELETE FROM courts
+      WHERE court_id = $1
+      `;
+      console.log(queryBookings)
+      console.log('test')
+      // Execute the SQL query to delete bookings first
+      await pool.query(queryBookings, [court_id]);
+
+      // Execute the SQL query to delete court
+      await pool.query(queryCourts, [court_id]);
 
       // Send a success response to the client
       res.status(200).json({ message: 'Court deleted successfully' });
-  } catch (error) {
+      } catch (error) {
       console.error('Error deleting Court:', error);
       // Send an error response to the client
       res.status(500).json({ error: 'Failed to delete Court' });
-  }
-});
+      }
+      });
 
 router.post('/new', authenticateToken, async (req, res) => {
   try {

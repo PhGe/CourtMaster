@@ -244,15 +244,19 @@
       async updateCourt() {
     try {
     const authToken = localStorage.getItem('authToken');
-    const unselectedTimeslots = this.editedCourt.timeSlots.filter(slot => this.selectedTimeslots.includes(slot));
+    if (this.editedCourt.timeSlots.length > 0) {
+            const unselectedTimeslots = this.editedCourt.timeSlots.filter(slot => !this.selectedTimeslots.includes(slot));
 
-    await axios.post(`${this.apiUrl}/courts/delete-timeslots/${this.editedCourt.court_id}`, { unselectedTimeslots }, {
-            headers: {
-                'Authorization': authToken,
+            if (unselectedTimeslots.length > 0) {
+                await axios.post(`${this.apiUrl}/courts/delete-timeslots/${this.editedCourt.court_id}`, { unselectedTimeslots }, {
+                    headers: {
+                        'Authorization': authToken,
+                    }
+                });
+
+                console.log("UNSELECTED:   " + unselectedTimeslots);
             }
-        });
-
-    console.log("UNSELECTED:   " +unselectedTimeslots)
+        }
 
     await axios.put(`${this.apiUrl}/courts/edit/${this.editedCourt.court_id}`, this.editedCourt, {
       headers: {
@@ -280,6 +284,7 @@
         try {
           const authToken = localStorage.getItem('authToken');
           console.log("Delete Court: " + court);
+          console.log(court);
           console.log("Delete Court: " + court.court_id);
           await axios.delete(`${this.apiUrl}/courts/delete/${court.court_id}`,
           {
@@ -482,7 +487,14 @@
       background-color: #f9f9f9;
       padding: 15px;
       width: 100%;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
   }
+
+  .court-item:hover {
+    background-color: #e0e0e0; /* Change background color on hover */
+}
   
   .court-details {
       display: flex;

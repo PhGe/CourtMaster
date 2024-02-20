@@ -17,12 +17,12 @@
       @click="openBookingWindow"
     ></el-calendar>
 
+
     <!-- Booking Window Component -->
     <BookingWindow
       v-if="isBookingWindowOpen"
       :selectedDate="selectedDate"
       :userId="userId"
-      @confirm="confirmBooking"
       @cancel="closeBookingWindow"
     />
   
@@ -113,27 +113,42 @@ renderCalendar() {
       },
       // Method to open booking window when a date is clicked
       openBookingWindow() {
-        if (!this.$refs.calendar) return;
-        
+  if (!this.$refs.calendar) return;
 
-        // Use the calendar instance to select today's date
-        const selectedDate = this.$refs.calendar.selectedDay.$d;
-        console.log(selectedDate)
-        
-         // Extract the necessary information from the selected date
-        const year = selectedDate.getFullYear();
-        const month = selectedDate.getMonth() + 1; // Month is zero-based, so add 1
-        const day = selectedDate.getDate();
+  // Use the calendar instance to select today's date
+  const selectedDate = this.$refs.calendar.selectedDay.$d;
+  console.log(selectedDate);
 
-        // Format the date as desired (e.g., YYYY-MM-DD)
-        const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+  // Get the current date
+  const currentDate = new Date();
 
-        // Pass the formatted date to your BookingWindow component
-        this.selectedDate = formattedDate;
-        console.log(this.selectedDate)
-        // Open the booking window
-        this.isBookingWindowOpen = true;
-      },
+  // Extract year, month, and day from the selected date
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+  const day = selectedDate.getDate();
+
+  // Extract year, month, and day from the current date
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const currentDay = currentDate.getDate();
+
+  // Create Date objects for the current date and the selected date
+  const currentDateObject = new Date(currentYear, currentMonth, currentDay);
+  const selectedDateObject = new Date(year, month, day);
+
+  // Check if the selected date is today or in the future
+  if (selectedDateObject >= currentDateObject) {
+    // Format the date as desired (e.g., YYYY-MM-DD)
+    const formattedDate = `${year}-${month < 9 ? '0' + (month + 1) : month + 1}-${day < 10 ? '0' + day : day}`;
+
+    // Pass the formatted date to your BookingWindow component
+    this.selectedDate = formattedDate;
+    console.log(this.selectedDate);
+    
+    // Open the booking window
+    this.isBookingWindowOpen = true;
+  }
+},
     // Method to close booking window
     closeBookingWindow() {
       this.isBookingWindowOpen = false;

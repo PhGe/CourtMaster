@@ -1,29 +1,38 @@
 <template>
-    <div>
-      <el-card v-for="booking in bookings" :key="booking.booking_id" class="booking-card">
-        <!-- Booking card content -->
-        <div slot="header" class="booking-card-header">
-          <span>Booking ID: {{ booking.booking_id }}</span>
-        </div>
-        <div class="booking-card-content">
-          <p>User ID: {{ booking.user_id }}</p>
-          <p>Booking Date: {{ booking.booking_date }}</p>
-          <p>Time Slot: {{`${booking.booking_starttime}-${booking.booking_endtime}`}}</p>
-          <p>Court ID: {{ booking.court_id }}</p>
-        </div>
+  <div>
+    <el-card v-for="booking in displayedBookings" :key="booking.booking_id" class="booking-card">
+      <!-- Booking card header -->
+      <div
+        slot="header"
+        class="booking-card-header"
+        @click="toggleCardContent(booking.booking_id)"
+        :style="{ cursor: 'pointer', backgroundColor: hovering === booking.booking_id ? '#e8e8e8' : '#f0f0f0' }"
+        @mouseover="hovering = booking.booking_id"
+        @mouseleave="hovering = null"
+      >
+        <span>Booking ID: {{ booking.booking_id }}</span>
+      </div>
+      <!-- Booking card content -->
+      <div v-if="expandedCard === booking.booking_id" class="booking-card-content">
+        <p>User ID: {{ booking.user_id }}</p>
+        <p>Booking Date: {{ booking.booking_date }}</p>
+        <p>Time Slot: {{`${booking.booking_starttime}-${booking.booking_endtime}`}}</p>
+        <p>Court ID: {{ booking.court_id }}</p>
         <div class="booking-card-footer">
           <el-button type="danger" @click="cancelBooking(booking.booking_id)">Cancel Booking</el-button>
           <el-button type="primary" @click="generateInvoice(booking)">Generate Invoice</el-button>
         </div>
-      </el-card>
-    </div>
-  </template>
+      </div>
+    </el-card>
+    <!-- Load more button if bookings exceed 10 -->
+    <el-button v-if="shouldShowLoadMoreButton" type="primary" @click="loadMore">Load more</el-button>
+  </div>
+</template>
   
   <script>
   import axios from 'axios';
   import jsPDF from 'jspdf'; // Import jsPDF
 
-  
   export default {
     name: 'BookingsList',
     props: {
@@ -32,16 +41,30 @@
         required: true
       }
     },
+    computed: {
+    shouldShowLoadMoreButton() {
+      return this.displayedBookings.length < this.totalBookings;
+    },
+  },
     data() {
       return {
         bookings: [],
-        apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com' // Default to localhost
+        displayedBookings: [],
+        totalBookings: 0,
+        apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com', // Default to localhost
+        initialLoadCount: 5,
+        hovering: null,
+        expandedCard: null,
       };
     },
     created() {
       this.fetchBookings();
     },
     methods: {
+      toggleCardContent(bookingId) {
+      // Toggle the expanded state of the card content
+      this.expandedCard = this.expandedCard === bookingId ? null : bookingId;
+      },
       async fetchBookings() {
         try {
           const response = await axios.get(`${this.apiUrl}/booking/all`, {
@@ -50,6 +73,8 @@
             }
           });
           this.bookings = response.data;
+          this.totalBookings = this.bookings.length;
+          this.displayedBookings = this.bookings.slice(0, this.initialLoadCount);
         } catch (error) {
           console.error('Error fetching bookings:', error);
         }
@@ -168,7 +193,13 @@ doc.setTextColor(0, 0, 0);
   } catch (error) {
     console.error('Error generating invoice:', error);
   }
-},
+      },
+      async loadMore() {
+      // Load more bookings
+      const startIndex = this.displayedBookings.length;
+      const endIndex = Math.min(startIndex + this.initialLoadCount, this.totalBookings);
+      this.displayedBookings = this.displayedBookings.concat(this.bookings.slice(startIndex, endIndex));
+    },
     }
   };
   </script>
@@ -191,6 +222,8 @@ doc.setTextColor(0, 0, 0);
   .booking-card-footer {
     padding: 10px;
     text-align: right;
+    display: flex;
+    justify-content: space-around;
   }
   </style>
   
