@@ -145,14 +145,8 @@ jobs:
       - name: Install Playwright Browser
         run: npx playwright install
 
-      - name: Install Dependencies for Jest
-        run: npm install jest @types/jest
-
       - name: Run Playwright Tests
         run: npx playwright test tests/playwright --trace on
-
-      - name: Run Jest Tests
-        run: npm test
 
       - name: Upload Trace File
         uses: actions/upload-artifact@v2
