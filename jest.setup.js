@@ -1,3 +1,4 @@
-// jest.setup.js
+process.env.NODE_ENV = 'test'; // Set the environment to test
 
-process.env.TEST_PORT = '3002'; // Set the test port
+// Optionally set the test port
+process.env.TEST_PORT = '3001'; // Set the test port

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const loginAndGetToken = require('../../src/utils/loginUtilsTwo');
 const request = require('supertest');
 const app = require('../../server');

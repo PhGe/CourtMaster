@@ -20,7 +20,8 @@ const {
 // Create an Express application
 const app = express();
 const port = process.env.PORT || 3000;
-const testPort = process.env.TEST_PORT || 3052;
+const testPort = process.env.TEST_PORT || 3001; // Update the default test port
+
 
 // Enable CORS
 app.use(cors());
@@ -28,7 +29,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Define Swagger options
-swaggerOptions = {
+const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
@@ -182,10 +183,8 @@ app.use((req, res, next) => {
 });
 
 // Start the server
-if (process.env.NODE_ENV !== 'test') {
-app.listen(port, () => {
-  console.log(`Server is running on ${API_BASE_URL}`);
+app.listen(process.env.NODE_ENV === 'test' ? testPort : port, () => {
+  console.log(`Server is running on port ${process.env.NODE_ENV === 'test' ? testPort : port}`);
 });
-}
 
 module.exports = app;
