@@ -1,0 +1,10 @@
+{
+    "plugins": ["jest"],
+    "env": {
+      "jest/globals": true,
+      "es6": true
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    }
+}

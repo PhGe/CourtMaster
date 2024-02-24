@@ -138,6 +138,7 @@ router.get('/:courtId', authenticateToken, async (req, res) => {
 
 
 router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
+  console.log("test2")
   try {
       const { court_id } = req.params;
       console.log(court_id)
@@ -167,7 +168,7 @@ router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
       // Send an error response to the client
       res.status(500).json({ error: 'Failed to delete Court' });
       }
-      });
+});
 
 router.post('/new', authenticateToken, async (req, res) => {
   try {

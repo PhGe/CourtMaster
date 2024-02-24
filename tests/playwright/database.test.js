@@ -1,7 +1,7 @@
 
 const { test, expect } = require('@playwright/test');
 const { Pool } = require('pg');
-const {login} = require ('../src/utils/loginUtil.js')
+const {login} = require ('../../src/utils/loginUtil')
 
 const DATABASE_URL = 'postgres://dyjfpsho:a0N5GKX2kyBNAZ68w8Gpaw8AsGShUH6j@flora.db.elephantsql.com/dyjfpsho';
 

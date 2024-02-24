@@ -20,6 +20,7 @@ const {
 // Create an Express application
 const app = express();
 const port = process.env.PORT || 3000;
+const testPort = process.env.TEST_PORT || 3052;
 
 // Enable CORS
 app.use(cors());
@@ -27,7 +28,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Define Swagger options
-const swaggerOptions = {
+swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
@@ -59,12 +60,12 @@ const swaggerOptions = {
   apis: ['./src/routes/*.js'], // Path to the API routes
 };
 
-module.exports = swaggerOptions;
+
 
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
+let API_BASE_URL = 'http://localhost:3000';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
   API_BASE_URL = process.env.API_BASE_URL;
@@ -181,6 +182,10 @@ app.use((req, res, next) => {
 });
 
 // Start the server
-app.listen(port ,   () => {
+if (process.env.NODE_ENV !== 'test') {
+app.listen(port, () => {
   console.log(`Server is running on ${API_BASE_URL}`);
 });
+}
+
+module.exports = app;
