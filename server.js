@@ -19,7 +19,7 @@ const {
 
 // Create an Express application
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 'https://court-master-e4c0d72c16c5.herokuapp.com';
 const testPort = process.env.TEST_PORT || 3001; // Update the default test port
 
 
@@ -66,7 +66,7 @@ const swaggerOptions = {
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-let API_BASE_URL = 'http://localhost:3000';
+let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
   API_BASE_URL = process.env.API_BASE_URL;
