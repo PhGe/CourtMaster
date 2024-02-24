@@ -19,7 +19,7 @@ const {
 
 // Create an Express application
 const app = express();
-const port = process.env.PORT || 'https://court-master-e4c0d72c16c5.herokuapp.com';
+const port = process.env.PORT || 3000;
 const testPort = process.env.TEST_PORT || 3001; // Update the default test port
 
 
