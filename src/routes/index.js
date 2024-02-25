@@ -30,13 +30,14 @@ const router = createRouter({
 });
 
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
+let API_BASE_URL = 'http://localhost:3000';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
   API_BASE_URL = process.env.API_BASE_URL;
 }
 
 // Route guard to check authentication token
+// Authentication guard
 router.beforeEach(async (to, from, next) => {
   console.log('Authentication Route Guard - Starting');
   if (to.matched.some((record) => record.meta.requiresAuth)) {
@@ -68,21 +69,16 @@ router.beforeEach(async (to, from, next) => {
   }
 });
 
-// Route guard to check admin role
+// Admin role guard
 router.beforeEach(async (to, from, next) => {
   console.log('Admin Role Route Guard - Starting');
   if (to.matched.some((record) => record.meta.requiresAdmin)) {
-
     console.log('Route requires admin role');
-
     const authToken = localStorage.getItem('authToken');
-
     console.log('Auth token:', authToken);
-
     try {
-      // Get the userId from Vuex store
       const userId = store.getters.getUserId;
-      console.log(userId)
+      console.log(userId);
       const userDetailsResponse = await axios.get(`${API_BASE_URL}/users/role/${userId}`, {
         headers: {
           'Authorization': authToken,
@@ -107,6 +103,7 @@ router.beforeEach(async (to, from, next) => {
     next();
   }
 });
+
 
 
 export default router;

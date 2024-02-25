@@ -1,11 +1,45 @@
+// jest.config.js
+
 module.exports = {
-  testEnvironment: 'node', // This sets up the testing environment to run in a Node.js environment
-  testPathIgnorePatterns: ['/node_modules/', '/playwright/'], // Ignore specified directories during test runs
-  coveragePathIgnorePatterns: ['/node_modules/', '/playwright/'], // Ignore specified directories during coverage calculation
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'], // File extensions to look for when running tests
-  collectCoverage: true, // Enable test coverage collection
-  collectCoverageFrom: ['src/**/*.js'], // Directory or files to include in coverage collection
-  coverageReporters: ['text', 'lcov'], // Output coverage reports in text and lcov formats
-  verbose: true, // Display individual test results with the test suite hierarchy
-  setupFiles: ['<rootDir>/jest.setup.js'], // Specify the path to your Jest setup file
+  projects: [
+    {
+      displayName: 'node-tests',
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/tests/jest/node/*.js'],
+      testPathIgnorePatterns: ['/node_modules/', '/playwright/'],
+      coveragePathIgnorePatterns: ['/node_modules/', '/playwright/'],
+      moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node', 'vue'],
+      collectCoverage: true,
+      collectCoverageFrom: ['src/**/*.js'],
+      coverageReporters: ['text', 'lcov'],
+      verbose: true,
+      setupFiles: ['<rootDir>/jest.setup.js'],
+      transform: {
+        '^.+\\.js$': 'babel-jest',
+      },
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+    },
+    {
+      displayName: 'jsdom-tests',
+      testEnvironment: 'jsdom',
+      testMatch: ['<rootDir>/tests/jest/jsdom/*.js'],
+      testPathIgnorePatterns: ['/node_modules/', '/playwright/'],
+      coveragePathIgnorePatterns: ['/node_modules/', '/playwright/'],
+      moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node', 'vue'],
+      collectCoverage: true,
+      collectCoverageFrom: ['src/**/*.js'],
+      coverageReporters: ['text', 'lcov'],
+      verbose: true,
+      setupFiles: ['<rootDir>/jest.setup.js'],
+      transform: {
+        '^.+\\.vue$': '@vue/vue3-jest',
+        '^.+\\.js$': 'babel-jest',
+      },
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
+      },
+    },
+  ],
 };

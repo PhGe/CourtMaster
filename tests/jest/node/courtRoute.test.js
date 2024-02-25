@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-const loginAndGetToken = require('../../src/utils/loginUtilsTwo');
+const loginAndGetToken = require('../../../src/utils/loginUtilsTwo');
 const request = require('supertest');
-const app = require('../../server');
+const app = require('../../../server');
 
 let authToken; // Declare the authToken variable
 
@@ -153,4 +153,8 @@ describe('POST /courts/add-timeslots/:courtId', () => {
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Timeslots added successfully');
   });
+});
+
+afterAll(async () => {
+  await new Promise(resolve => setTimeout(() => resolve(), 3000)); // Delay to allow server to close properly
 });

@@ -19,9 +19,7 @@ const {
 
 // Create an Express application
 const app = express();
-const port = process.env.PORT || 'https://court-master-e4c0d72c16c5.herokuapp.com';
-const testPort = process.env.TEST_PORT || 3001; // Update the default test port
-
+const port = process.env.PORT || 3000;
 
 // Enable CORS
 app.use(cors());
@@ -66,9 +64,10 @@ const swaggerOptions = {
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
+let API_BASE_URL = 'http://localhost:3000';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
+  // eslint-disable-next-line no-unused-vars
   API_BASE_URL = process.env.API_BASE_URL;
 }
 
@@ -182,9 +181,13 @@ app.use((req, res, next) => {
   }
 });
 
+
 // Start the server
-app.listen(process.env.NODE_ENV === 'test' ? testPort : port, () => {
-  console.log(`Server is running on port ${process.env.NODE_ENV === 'test' ? testPort : port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Listening on port ${port}`);
+  });
+}
+
 
 module.exports = app;
