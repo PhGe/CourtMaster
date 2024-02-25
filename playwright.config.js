@@ -10,5 +10,5 @@ export default defineConfig({
 });
 
 module.exports = {
-  testMatch: ["**/tests/**/*.test.js"],
+  testMatch: ["**/tests/playwright/*.test.js"],
 };

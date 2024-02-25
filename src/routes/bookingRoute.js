@@ -79,6 +79,7 @@ const bookingRoute = (pool) => {
         try {
           // Extract booking data from the request body
           const { date, time, courtId, userId } = req.body;
+          console.log(req.body)
           console.log(date, time, courtId, userId)
 
                     
