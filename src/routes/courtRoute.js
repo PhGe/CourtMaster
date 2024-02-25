@@ -170,6 +170,41 @@ router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
       }
 });
 
+router.delete('/deleteByName/:court_name', authenticateToken, async (req, res) => {
+  try {
+    const { court_name } = req.params;
+
+    // Query the database to retrieve the court_id based on court_name
+    const courtQuery = `
+      SELECT court_id FROM courts WHERE court_name = $1
+    `;
+    const courtResult = await pool.query(courtQuery, [court_name]);
+    const court_id = courtResult.rows[0].court_id; // Extract the court_id from the query result
+
+    // Define the SQL queries to delete bookings and court
+    const queryBookings = `
+      DELETE FROM bookings WHERE court_id = $1
+    `;
+    const queryCourts = `
+      DELETE FROM courts WHERE court_id = $1
+    `;
+
+    // Execute the SQL query to delete bookings first
+    await pool.query(queryBookings, [court_id]);
+
+    // Execute the SQL query to delete court
+    await pool.query(queryCourts, [court_id]);
+
+    // Send a success response to the client
+    res.status(200).json({ message: 'Court deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting Court:', error);
+    // Send an error response to the client
+    res.status(500).json({ error: 'Failed to delete Court' });
+  }
+});
+
+
 router.post('/new', authenticateToken, async (req, res) => {
   try {
     const { court_name, court_type, location, capacity, available } = req.body;

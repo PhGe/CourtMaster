@@ -156,5 +156,16 @@ describe('POST /courts/add-timeslots/:courtId', () => {
 });
 
 afterAll(async () => {
+  try {
+    const court_name= 'New Court';
+    const response = await request(app)
+      .delete(`/courts/deleteByName/${court_name}`)
+      .set('Authorization', `${authToken}`);
+    console.log(response.body); // Log the response for debugging purposes
+  } catch (error) {
+    console.error('Error resetting application state:', error);
+    // Handle the error appropriately
+  }
+
   await new Promise(resolve => setTimeout(() => resolve(), 3000)); // Delay to allow server to close properly
 });
