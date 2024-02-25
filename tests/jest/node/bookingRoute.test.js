@@ -48,6 +48,86 @@ app.use(express.json());
 app.use('/booking', bookingRoute(mockPool));
 
 describe('Booking Routes', () => {
+
+    it('should return all bookings', async () => {
+        // Mock the database query function to return a predefined list of bookings
+        const mockQueryResult = {
+            rows: [
+                {
+                    booking_id: 1,
+                    user_id: 1,
+                    booking_date: "2024-02-23",
+                    booking_starttime: "18:00:00",
+                    court_id: 8,
+                    booking_status: "confirmed",
+                    created_at: "2024-02-20 20:07:34 +0000",
+                    booking_endtime: "19:00:00"
+                },
+                {
+                    booking_id: 2,
+                    user_id: 2,
+                    booking_date: "2024-02-24",
+                    booking_starttime: "19:00:00",
+                    court_id: 2,
+                    booking_status: "confirmed",
+                    created_at: "2024-03-20 20:07:34 +0000",
+                    booking_endtime: "20:00:00"
+                },
+            ],
+        };
+        mockPool.query = jest.fn().mockResolvedValueOnce(mockQueryResult);
+
+        // Send a GET request to retrieve all bookings
+        const response = await request(app)
+            .get('/booking/all')
+            .set('Authorization', `${authToken}`);
+
+        // Assert the response status code and data
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(mockQueryResult.rows);
+    });
+
+    it('should return bookings by user', async () => {
+        const userId = 33; // Mock user ID
+
+        // Mock the database query function to return bookings for the specified user
+        const mockQueryResult = {
+            rows: [
+                {
+                    booking_id: 1,
+                    user_id: 1,
+                    booking_date: "2024-02-23",
+                    booking_starttime: "18:00:00",
+                    court_id: 8,
+                    booking_status: "confirmed",
+                    created_at: "2024-02-20 20:07:34 +0000",
+                    booking_endtime: "19:00:00"
+                },
+                {
+                    booking_id: 2,
+                    user_id: 2,
+                    booking_date: "2024-02-24",
+                    booking_starttime: "19:00:00",
+                    court_id: 2,
+                    booking_status: "confirmed",
+                    created_at: "2024-03-20 20:07:34 +0000",
+                    booking_endtime: "20:00:00"
+                },
+            ],
+        };
+        mockPool.query = jest.fn().mockResolvedValueOnce(mockQueryResult);
+
+        // Send a GET request to retrieve bookings by user
+        const response = await request(app)
+            .get('/booking/allByUser')
+            .query({ userId })
+            .set('Authorization', `${authToken}`);
+
+        // Assert the response status code and data
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toEqual(mockQueryResult.rows);
+    });
+
     it('should confirm a booking', async () => {
       const mockRequest = {
         date: '2024-02-28',
