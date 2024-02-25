@@ -80,7 +80,7 @@ export default {
       bookingStatus: 'pending',
       availableTimeSlots: [],
       bookingsFetched: false,
-      apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com',
+      apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com/users/login',
       isConfirmingBooking: false,
       showModal: false,
     };
