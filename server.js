@@ -64,7 +64,7 @@ const swaggerOptions = {
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com/users/login';
+let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
 
 if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
   // eslint-disable-next-line no-unused-vars

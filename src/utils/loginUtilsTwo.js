@@ -3,7 +3,7 @@
 const axios = require('axios');
 
 async function loginAndGetToken() {
-    const authEndpoint = 'https://court-master-e4c0d72c16c5.herokuapp.com/users/login';
+    const authEndpoint = 'https://court-master-e4c0d72c16c5.herokuapp.com';
     
     try {
         const response = await axios.post(authEndpoint, {

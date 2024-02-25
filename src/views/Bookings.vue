@@ -33,7 +33,7 @@ components: {
 data() {
   return {
     bookings: [],
-    apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com/users/login' // Default to localhost
+    apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com' // Default to localhost
   };
 },
 created() {
