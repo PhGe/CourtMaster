@@ -1,3 +1,4 @@
+//bookinRoute.js
 // Import necessary modules
 const express = require('express');
 const authenticateToken = require('../../middleware/authenticate.js');
@@ -51,7 +52,7 @@ const bookingRoute = (pool) => {
           res.json(bookings);
         } catch (error) {
           console.error('Error fetching bookings:', error);
-          res.status(500).send('Internal Server Error');
+          res.status(500).json({ error: 'Internal Server Error' });
         }
       });
 
@@ -70,7 +71,8 @@ const bookingRoute = (pool) => {
           res.json(bookings);
         } catch (error) {
           console.error('Error fetching bookings:', error);
-          res.status(500).send('Internal Server Error');
+          res.status(500).json({ error: 'Internal Server Error' });
+
         }
       });
       
@@ -174,7 +176,7 @@ const bookingRoute = (pool) => {
             res.json(bookedTimeSlots);
         } catch (error) {
             console.error('Error fetching booked time slots:', error);
-            res.status(500).json({ error: 'Failed to retrieve booked time slots' });
+            res.status(500).json({ error: 'Internal Server Error' });
         }
         });
 

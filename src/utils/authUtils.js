@@ -1,4 +1,4 @@
-
+// authUtils.js
 let jwtToken = null;
 let tokenExpiration = null;
 let inactivityTimer = null;
@@ -15,17 +15,17 @@ function setTokenAndExpiration(token, expirationTime) {
 }
   
   // Check if the token is expired
-function isTokenExpired() {
-  if (!tokenExpiration) {
-    return true; // Token expiration time not set
-    
+  function isTokenExpired() {
+    if (!tokenExpiration) {
+      return true; // Token expiration time not set
+
+    }
+  
+    const currentTimestamp = Date.now();
+    const expirationTimestamp = tokenExpiration;
+  
+    return currentTimestamp >= expirationTimestamp;
   }
-
-  const currentTimestamp = Date.now();
-  const expirationTimestamp = tokenExpiration;
-
-  return currentTimestamp >= expirationTimestamp;
-}
   
 // Check token expiration on every request
 function checkTokenExpiration() {

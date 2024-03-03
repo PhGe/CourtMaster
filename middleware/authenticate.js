@@ -1,3 +1,5 @@
+//authenticate.js
+
 const jwt = require('jsonwebtoken');
 
 function getToken(req)
@@ -23,8 +25,7 @@ function extractUserId(req) {
 
 
 function authenticateToken(req, res, next) {
-  console.log(req.headers.authorization)
-  console.log("auth")
+
   const token = req.headers.authorization;
 
   //no Token at all

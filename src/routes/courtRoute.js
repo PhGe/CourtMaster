@@ -39,32 +39,31 @@ const CourtRoute = (pool) => {
 
 router.get('/all', authenticateToken, async (req, res) => {
   try {
-      // Fetch data from courts and courts_time_slots tables
-      const courtsResult = await pool.query('SELECT * FROM courts');
-      const timeSlotsResult = await pool.query('SELECT * FROM court_time_slots');
+    // Fetch data from courts and courts_time_slots tables
+    const courtsResult = await pool.query('SELECT * FROM courts');
+    const timeSlotsResult = await pool.query('SELECT * FROM court_time_slots');
 
-      console.log(courtsResult)
-      console.log(timeSlotsResult)
-      // Process the results to include time slots in the courts data
-      const courtsWithTimeSlots = courtsResult.rows.map(court => {
-          // Filter time slots for the current court
-          const courtTimeSlots = timeSlotsResult.rows.filter(slot => slot.court_id === court.court_id);
+    // Process the results to include time slots in the courts data
+    const courtsWithTimeSlots = courtsResult.rows.map(court => {
+      // Filter time slots for the current court
+      const courtTimeSlots = timeSlotsResult.rows.filter(slot => slot.court_id === court.court_id);
 
-          // Format time slots as "start_time-end_time"
-          const formattedTimeSlots = courtTimeSlots.map(slot => `${slot.start_time}-${slot.end_time}`);
+      // Format time slots as "start_time-end_time"
+      const formattedTimeSlots = courtTimeSlots.map(slot => `${slot.start_time}-${slot.end_time}`);
 
-          // Add formatted time slots to the court object
-          return {
-              ...court,
-              timeSlots: formattedTimeSlots
-          };
-      });
+      // Add formatted time slots to the court object
+      return {
+        ...court,
+        timeSlots: formattedTimeSlots
+      };
+    });
 
-      // Send the processed data as a JSON response
-      res.json(courtsWithTimeSlots);
+    // Send the processed data as a JSON response with a 200 status code
+    res.json(courtsWithTimeSlots);
   } catch (error) {
-      console.error('Error during booking:', error);
-      res.status(500).json({ success: false, error: 'Internal Server Error' });
+    console.error('Error during fetching all courts:', error);
+    // If an error occurs, return a 500 status code along with an error message
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 
@@ -75,9 +74,7 @@ router.get('/:courtId/availability', authenticateToken, async (req, res) => {
         // Query the database to retrieve existing time slots for the specified court
         const timeSlotsQuery = await pool.query('SELECT start_time, end_time FROM court_time_slots WHERE court_id = $1', [courtId]);
         // Extract start and end times from the query result
-        console.log(timeSlotsQuery)
         const availableTimeSlots = timeSlotsQuery.rows.map(row => `${row.start_time}-${row.end_time}`);
-        console.log(availableTimeSlots)
         // Send the list of available time slots as a JSON response
         res.json({ availableTimeSlots });
     } catch (error) {
@@ -86,16 +83,12 @@ router.get('/:courtId/availability', authenticateToken, async (req, res) => {
     }
 });
 
-
 router.get('/all/:courtId', authenticateToken, async (req, res) => {
   const { courtId } = req.params;
   try {
       // Fetch data from courts and courts_time_slots tables
       const courtResult = await pool.query('SELECT * FROM courts WHERE court_id = $1', [courtId]);
       const timeSlotsResult = await pool.query('SELECT * FROM court_time_slots WHERE court_id = $1', [courtId]);
-
-      console.log(courtResult);
-      console.log(timeSlotsResult);
 
       // Check if the court with the specified ID exists
       if (courtResult.rows.length === 0) {
@@ -125,9 +118,8 @@ router.get('/:courtId', authenticateToken, async (req, res) => {
       // Query the database to retrieve existing time slots for the specified court
       const timeSlotsQuery = await pool.query('SELECT start_time, end_time FROM court_time_slots WHERE court_id = $1', [courtId]);
       // Extract start and end times from the query result
-      console.log(timeSlotsQuery)
       const availableTimeSlots = timeSlotsQuery.rows.map(row => `${row.start_time}-${row.end_time}`);
-      console.log(availableTimeSlots)
+
       // Send the list of available time slots as a JSON response
       res.json({ availableTimeSlots });
   } catch (error) {
@@ -136,12 +128,9 @@ router.get('/:courtId', authenticateToken, async (req, res) => {
   }
 });
 
-
 router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
-  console.log("test2")
   try {
       const { court_id } = req.params;
-      console.log(court_id)
       // Define the SQL query to delete the booking with the provided booking ID
       // Define the SQL queries to delete bookings and court
       const queryBookings = `
@@ -153,8 +142,7 @@ router.delete('/delete/:court_id', authenticateToken, async (req, res) => {
       DELETE FROM courts
       WHERE court_id = $1
       `;
-      console.log(queryBookings)
-      console.log('test')
+
       // Execute the SQL query to delete bookings first
       await pool.query(queryBookings, [court_id]);
 
@@ -286,7 +274,7 @@ router.post('/delete-timeslots/:courtId', authenticateToken, async (req, res) =>
 
 // Define the route for adding timeslots to a court
 router.post('/add-timeslots/:courtId', authenticateToken, async (req, res) => {
-  console.log(req)
+
   const { courtId } = req.params;
   const  startTime  = req.body.startTime; // Assuming timeslots is an array of objects containing start and end times
   const  endTime  = req.body.endTime;

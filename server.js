@@ -19,7 +19,7 @@ const {
 
 // Create an Express application
 const app = express();
-const port = process.env.PORT || 'https://court-master-e4c0d72c16c5.herokuapp.com';
+const port = process.env.PORT || '3000';
 
 // Enable CORS
 app.use(cors());
@@ -179,6 +179,11 @@ app.use((req, res, next) => {
     console.error("Middleware: Error checking token expiration", error);
     next(error); // pass the error to the next middleware
   }
+});
+
+app.use((err, req, res) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({ success: false, error: 'Internal Server Error' });
 });
 
 
