@@ -1,8 +1,9 @@
 /* eslint-disable no-undef */
+//bookingRoute.test.js
 const request = require('supertest');
 const express = require('express');
 const bookingRoute = require('../../../src/routes/bookingRoute'); // Import your booking route module
-const loginAndGetToken = require('../../../src/utils/loginUtilsTwo');
+const { loginAndGetToken } = require('../../../src/utils/loginUtilsTwo');
 const { Pool } = require('pg'); // Import Pool from pg for database connection
 
 const app = express();
@@ -19,29 +20,22 @@ beforeAll(async () => {
   }
 });
 
-// Mock booking data for testing
-const mockBookings = [
-  {
-    booking_id: 69,
-    user_id: 33,
-    booking_date: '2024-02-10',
-    booking_starttime: '10:00:00',
-    court_id: 1,
-    booking_status: 'pending',
-    created_at: '2024-02-08 05:22:42 +0000',
-    booking_endtime: '11:00:00'
-  },
-  {
-    booking_id: 420,
-    user_id: 341,
-    booking_date: '2023-12-24',
-    booking_starttime: '12:00:00',
-    court_id: 3,
-    booking_status: 'confirmed',
-    created_at: '2024-02-10 16:35:41 +0000',
-    booking_endtime: '13:00:00'
-  }
-];
+const handleErrorResponse = async (request, endpoint, authToken) => {
+  const consoleErrorSpy = jest.spyOn(console, 'error');
+
+  // Send a GET request to the specified endpoint
+  const response = await request.get(endpoint).set('Authorization', `${authToken}`);
+
+  // Assert the response status code and error message
+  expect(response.statusCode).toBe(500);
+  expect(response.body).toHaveProperty('error', 'Internal Server Error');
+
+  // Verify that the error is logged
+  expect(consoleErrorSpy).toHaveBeenCalled();
+
+  // Clean up the spy
+  consoleErrorSpy.mockRestore();
+};
 
 // Mock the booking route with a mock pool instance
 app.use(express.json());
@@ -135,20 +129,30 @@ describe('Booking Routes', () => {
         courtId: 8,
         userId: 33
       };
-  
+    
       // Mock the database query function
       mockPool.query = jest.fn().mockResolvedValueOnce();
-  
+    
+      // Spy on console.error
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    
       // Send a POST request to confirm a booking
       const response = await request(app)
         .post('/booking/book')
         .set('Authorization', `${authToken}`)
         .send(mockRequest);
-  
+    
       // Assert the response status code and message
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({ message: 'Booking confirmed successfully' });
+    
+      // Verify that the error is not logged
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+    
+      // Clean up the spy
+      consoleErrorSpy.mockRestore();
     });
+    
   
     it('should cancel a booking', async () => {
       const bookingId = 123; // Mock booking ID
@@ -185,6 +189,83 @@ describe('Booking Routes', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual(['10:00:00-11:00:00']);
     });
+
+    it('should handle errors when fetching bookings', async () => {
+      // Mock the database query function to throw an error
+      mockPool.query = jest.fn().mockRejectedValueOnce(new Error('Mocked database error'));
+
+      await handleErrorResponse(request(app), '/booking/all', authToken);
+    });
+  
+    it('should handle errors when fetching all bookings by user', async () => {
+      // Mock the database query function to throw an error
+      mockPool.query = jest.fn().mockRejectedValueOnce(new Error('Mocked database error'));
+
+      await handleErrorResponse(request(app), '/booking/allByUser', authToken);
+    });
+
+    it('should handle errors when confirming a booking', async () => {
+    // Mock the database query function to throw an error
+    mockPool.query = jest.fn().mockRejectedValueOnce(new Error('Mocked database error'));
+
+    // Mock request data
+    const mockRequest = {
+        date: '2024-02-28',
+        time: '19:00:00-20:00:00',
+        courtId: 8,
+        userId: 33
+    };
+
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+
+    // Send a POST request to confirm a booking
+    const response = await request(app)
+        .post('/booking/book')
+        .set('Authorization', `${authToken}`)
+        .send(mockRequest);
+
+    // Assert the response status code and message
+    expect(response.statusCode).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to confirm booking' });
+
+    // Verify that the error is logged
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    // Clean up the spy
+    consoleErrorSpy.mockRestore();
+    });
+
+    it('should handle errors when canceling a booking', async () => {
+      // Mock the database query function to throw an error
+      mockPool.query = jest.fn().mockRejectedValueOnce(new Error('Mocked database error'));
+
+      const bookingId = 123; // Mock booking ID
+
+      const consoleErrorSpy = jest.spyOn(console, 'error');
+
+      // Send a DELETE request to cancel a booking
+      const response = await request(app)
+          .delete(`/booking/cancel/${bookingId}`)
+          .set('Authorization', `${authToken}`);
+
+      // Assert the response status code and message
+      expect(response.statusCode).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to cancel booking' });
+
+      // Verify that the error is logged
+      expect(consoleErrorSpy).toHaveBeenCalled();
+
+      // Clean up the spy
+      consoleErrorSpy.mockRestore();
+    });
+
+    it('should handle errors when checking for availability', async () => {
+      // Mock the database query function to throw an error
+      mockPool.query = jest.fn().mockRejectedValueOnce(new Error('Mocked database error'));
+
+      await handleErrorResponse(request(app), '/booking/availability', authToken);
+    });
+    
   
     // Add more test cases as needed
   });

@@ -64,12 +64,6 @@ const swaggerOptions = {
 // Initialize Swagger
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-let API_BASE_URL = 'https://court-master-e4c0d72c16c5.herokuapp.com';
-
-if (process.env.NODE_ENV === 'production' && process.env.API_BASE_URL) {
-  // eslint-disable-next-line no-unused-vars
-  API_BASE_URL = process.env.API_BASE_URL;
-}
 
 
 // Serve Swagger documentation
@@ -102,7 +96,7 @@ app.get('/userlist', authenticateToken, (req, res) => {
 
 app.post('/users/signup', async (req, res) => {
   const { username, password, role } = req.body;
-
+  console.log('server test');
   // Hash the password
   try {
     const insertedUser = await insertUser(username, password, role);
@@ -110,25 +104,14 @@ app.post('/users/signup', async (req, res) => {
     // Send a response (you can customize the response as needed)
     res.json({ success: true, user: insertedUser });
   } catch (error) {
+    console.log('server test2');
     console.error('Error signing up:', error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 
-app.get('/example', authenticateToken ,async (req, res) => {
-  const username = 'Philipp';
-  const user = await getUserByUsername(username);
-
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).json({ error: 'User not found' });
-  }
-});
-
 app.post('/users/login', async (req, res) => {
   const { username, password } = req.body;
-
   try {
     // Retrieve the user from the database by username
     const user = await getUserByUsername(username);
@@ -142,7 +125,7 @@ app.post('/users/login', async (req, res) => {
         console.log("generateToken")
         const token = generateToken(user);
         const userId = user.id;
-        const expirationTime = 120;
+        const expirationTime = 1;
         setTokenAndExpiration(token, expirationTime)
 
         //on every request check if expired
@@ -159,6 +142,7 @@ app.post('/users/login', async (req, res) => {
       res.status(404).json({ success: false, message: 'User not found' });
     }
   } catch (error) {
+    console.log("test2")
     console.error('Error during login:', error.message);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
@@ -167,19 +151,9 @@ app.post('/users/login', async (req, res) => {
 
 
 app.get('/', (req, res) => {
-  res.send('Welcome to the CourtMaster API. Available endpoint: users/all or /example');
+  res.send('Welcome to the CourtMaster API. Available endpoint: users/all ');
 });
 
-// Middleware to check token expiration on every request
-app.use((req, res, next) => {
-  try {
-    checkTokenExpiration(); // Pass the response object
-    next();
-  } catch (error) {
-    console.error("Middleware: Error checking token expiration", error);
-    next(error); // pass the error to the next middleware
-  }
-});
 
 app.use((err, req, res) => {
   console.error('Error:', err.stack);

@@ -25,4 +25,4 @@ async function loginAndGetToken() {
         }
     }
 }
-module.exports = loginAndGetToken;
+module.exports = { loginAndGetToken }

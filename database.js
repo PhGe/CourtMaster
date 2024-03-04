@@ -10,8 +10,12 @@ const pool = new Pool({
 });
 
 async function insertUser(username, hashedPassword, role) {
-  const client = await pool.connect();
 
+  if (typeof username !== 'string') {
+    throw new Error('Username must be a string');
+  }
+
+  const client = await pool.connect();
   try {
       const result = await client.query(
           'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3) RETURNING *',
@@ -21,8 +25,9 @@ async function insertUser(username, hashedPassword, role) {
       const insertedUser = result.rows[0];
       return insertedUser;
   } catch (error) {
-      console.error('Error inserting user:', error); // Debug statement
-      throw error;
+    console.log('help'); // Debug statement
+    console.error('Error inserting user:', error);
+    throw new Error('Error inserting user');
   } finally {
       client.release();
   }
@@ -30,6 +35,11 @@ async function insertUser(username, hashedPassword, role) {
 
 
 async function getUserByUsername(username) {
+
+  if (typeof username !== 'string') {
+    throw new Error('Username must be a string');
+  }
+  
   try {
     const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
 

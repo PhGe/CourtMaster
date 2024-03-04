@@ -1,19 +1,25 @@
 /* eslint-disable no-undef */
-const loginAndGetToken = require('../../../src/utils/loginUtilsTwo');
+// courtRoute.test.js
+const { loginAndGetToken } = require('../../../src/utils/loginUtilsTwo');
+const courtRoute = require('../../../src/routes/courtRoute'); 
 const request = require('supertest');
 const app = require('../../../server');
-
+const express = require('express');
+const { Pool } = require('pg'); // Import Pool from pg for database connection
+const mockPool = new Pool(); // Mock pool instance for testing
 let authToken; // Declare the authToken variable
 
 beforeAll(async () => {
   try {
     authToken = await loginAndGetToken(); // Obtain the authentication token using your login function
-    console.log(authToken)
   } catch (error) {
     console.error('Error logging in:', error);
     throw new Error('Login failed');
   }
 });
+
+app.use(express.json());
+app.use('/courts', courtRoute(mockPool));
 
 test('Login and get authentication token', async () => {
   try {
@@ -33,6 +39,55 @@ describe('GET /courts/all', () => {
     expect(response.status).toBe(200);
     expect(response.body).toBeDefined();
     expect(Array.isArray(response.body)).toBe(true);
+  });
+});
+
+
+describe('GET /courts/:courtId/availability', () => {
+  it('should respond with a list of available time slots for the specified court', async () => {
+    // Assuming courtId 1 exists in your database
+    const courtId = 1;
+    const response = await request(app)
+      .get(`/courts/${courtId}/availability`)
+      .set('Authorization', `${authToken}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    // Add more assertions based on the expected response body or status code
+  });
+
+});
+
+describe('GET /courts/all/:courtId', () => {
+  it('should respond with the court information and available time slots for the specified court', async () => {
+    // Assuming courtId 1 exists in your database
+    const courtId = 1;
+    const response = await request(app)
+      .get(`/courts/all/${courtId}`)
+      .set('Authorization', `${authToken}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    // Add more assertions based on the expected response body or status code
+  });
+  it('should handle errors when retrieving court data', async () => {
+    const courtId = 999; // Invalid court ID
+    const response = await request(app)
+      .get(`/courts/all/${courtId}`)
+      .set('Authorization', `${authToken}`);
+    expect(response.status).toBe(404); // Assuming you return 404 for not found
+    expect(response.body).toHaveProperty('error');
+  });
+});
+
+describe('GET /courts/:courtId', () => {
+  it('should respond with the available time slots for the specified court', async () => {
+    // Assuming courtId 1 exists in your database
+    const courtId = 1;
+    const response = await request(app)
+      .get(`/courts/${courtId}`)
+      .set('Authorization', `${authToken}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    // Add more assertions based on the expected response body or status code
   });
 });
 
@@ -84,45 +139,6 @@ describe('PUT /courts/edit/:courtId', () => {
     expect(response.status).toBe(200);
     expect(response.body).toBeDefined();
     expect(response.body.court_name).toBe(updatedCourtData.court_name);
-  });
-});
-
-describe('GET /courts/:courtId/availability', () => {
-  it('should respond with a list of available time slots for the specified court', async () => {
-    // Assuming courtId 1 exists in your database
-    const courtId = 1;
-    const response = await request(app)
-      .get(`/courts/${courtId}/availability`)
-      .set('Authorization', `${authToken}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions based on the expected response body or status code
-  });
-});
-
-describe('GET /courts/all/:courtId', () => {
-  it('should respond with the court information and available time slots for the specified court', async () => {
-    // Assuming courtId 1 exists in your database
-    const courtId = 1;
-    const response = await request(app)
-      .get(`/courts/all/${courtId}`)
-      .set('Authorization', `${authToken}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions based on the expected response body or status code
-  });
-});
-
-describe('GET /courts/:courtId', () => {
-  it('should respond with the available time slots for the specified court', async () => {
-    // Assuming courtId 1 exists in your database
-    const courtId = 1;
-    const response = await request(app)
-      .get(`/courts/${courtId}`)
-      .set('Authorization', `${authToken}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toBeDefined();
-    // Add more assertions based on the expected response body or status code
   });
 });
 

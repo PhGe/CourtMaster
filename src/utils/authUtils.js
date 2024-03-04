@@ -29,10 +29,15 @@ function setTokenAndExpiration(token, expirationTime) {
   
 // Check token expiration on every request
 function checkTokenExpiration() {
-  if (isTokenExpired()) {
-    logout();
-  } else {
-    resetInactivityTimer();
+  try {
+    if (isTokenExpired()) {
+      logout();
+    } else {
+      resetInactivityTimer();
+    }
+  } catch (error) {
+    console.error('Error checking token expiration:', error.message);
+    throw error; // Rethrow the error to propagate it to the caller
   }
 }
   
@@ -61,8 +66,9 @@ function checkTokenExpiration() {
   }
   
   // Function to reset the inactivity timer
-function resetInactivityTimer() {
-    startInactivityTimer();
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer); // Clear the existing timer
+    startInactivityTimer(); // Start a new timer
 }
 
 module.exports = { setTokenAndExpiration, isTokenExpired, checkTokenExpiration, logout, startInactivityTimer ,resetInactivityTimer}
