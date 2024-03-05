@@ -16,29 +16,21 @@ function setTokenAndExpiration(token, expirationTime) {
   
   // Check if the token is expired
   function isTokenExpired() {
-    if (!tokenExpiration) {
-      return true; // Token expiration time not set
-
-    }
-  
-    const currentTimestamp = Date.now();
-    const expirationTimestamp = tokenExpiration;
-  
-    return currentTimestamp >= expirationTimestamp;
+      if (!tokenExpiration) {
+        return true; // Token expiration time not set
+      }
+      const currentTimestamp = Date.now();
+      const expirationTimestamp = tokenExpiration;
+      return currentTimestamp >= expirationTimestamp;
   }
   
 // Check token expiration on every request
 function checkTokenExpiration() {
-  try {
     if (isTokenExpired()) {
       logout();
     } else {
       resetInactivityTimer();
     }
-  } catch (error) {
-    console.error('Error checking token expiration:', error.message);
-    throw error; // Rethrow the error to propagate it to the caller
-  }
 }
   
   // Logout function

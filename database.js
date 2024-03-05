@@ -85,6 +85,7 @@ async function deleteUserById(userId) {
 }
 
 async function updateUserPassword(username, newPassword) {
+
   try {
     const query = 'UPDATE users SET password_hash = $1 WHERE username = $2';
     const result = await pool.query(query, [newPassword, username]);

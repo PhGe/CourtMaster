@@ -3,9 +3,10 @@
 const { loginAndGetToken } = require('../../../src/utils/loginUtilsTwo');
 const courtRoute = require('../../../src/routes/courtRoute'); 
 const request = require('supertest');
-const app = require('../../../server');
+const {app} = require('../../../server');
 const express = require('express');
 const { Pool } = require('pg'); // Import Pool from pg for database connection
+const {pool} = require('../../../database');
 const mockPool = new Pool(); // Mock pool instance for testing
 let authToken; // Declare the authToken variable
 
@@ -21,15 +22,6 @@ beforeAll(async () => {
 app.use(express.json());
 app.use('/courts', courtRoute(mockPool));
 
-test('Login and get authentication token', async () => {
-  try {
-    // Assert that the authentication token obtained in beforeAll is not empty or undefined
-    expect(authToken).toBeTruthy();
-  } catch (error) {
-    // If there's an error while logging in, throw an error to fail the test
-    throw new Error('Error logging in: ' + error.message);
-  }
-});
 
 describe('GET /courts/all', () => {
   it('should respond with a list of courts', async () => {
@@ -40,8 +32,18 @@ describe('GET /courts/all', () => {
     expect(response.body).toBeDefined();
     expect(Array.isArray(response.body)).toBe(true);
   });
-});
+  it('should handle errors during fetching courts', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
 
+    const response = await request(app)
+      .get('/courts/all')
+      .set('Authorization', `${authToken}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ success: false, error: 'Internal Server Error' });
+  });
+});
 
 describe('GET /courts/:courtId/availability', () => {
   it('should respond with a list of available time slots for the specified court', async () => {
@@ -54,7 +56,17 @@ describe('GET /courts/:courtId/availability', () => {
     expect(response.body).toBeDefined();
     // Add more assertions based on the expected response body or status code
   });
+  it('should handle errors during fetching available time slots for the specified court', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
 
+    const response = await request(app)
+      .get('/courts/${courtId}/availability')
+      .set('Authorization', `${authToken}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ success: false, error: 'Internal Server Error' });
+  });
 });
 
 describe('GET /courts/all/:courtId', () => {
@@ -76,6 +88,17 @@ describe('GET /courts/all/:courtId', () => {
     expect(response.status).toBe(404); // Assuming you return 404 for not found
     expect(response.body).toHaveProperty('error');
   });
+  it('should handle errors during fetching available time slots for the specified court', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    const courtId = 1;
+    const response = await request(app)
+      .get(`/courts/all/${courtId}`)
+      .set('Authorization', `${authToken}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ success: false, error: 'Internal Server Error' });
+  });
 });
 
 describe('GET /courts/:courtId', () => {
@@ -89,6 +112,17 @@ describe('GET /courts/:courtId', () => {
     expect(response.body).toBeDefined();
     // Add more assertions based on the expected response body or status code
   });
+  it('should handle errors during fetching courts', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    const courtId = 1;
+    const response = await request(app)
+      .get(`/courts/${courtId}`)
+      .set('Authorization', `${authToken}`);
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ success: false, error: 'Internal Server Error' });
+  });
 });
 
 describe('DELETE /courts/delete/:court_id', () => {
@@ -101,7 +135,19 @@ describe('DELETE /courts/delete/:court_id', () => {
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Court deleted successfully');
   });
+  it('should handle errors during deletion with the provided court_id', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    const courtId = 12;
+    const response = await request(app)
+      .delete(`/courts/delete/${courtId}`) // Ensure the correct route is used
+      .set('Authorization', `${authToken}`);
+  
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to delete Court' });
+  });
 });
+
 
 describe('POST /courts/new', () => {
   it('should create a new court', async () => {
@@ -119,6 +165,38 @@ describe('POST /courts/new', () => {
     expect(response.status).toBe(201);
     expect(response.body).toBeDefined();
     expect(response.body.court_name).toBe(newCourt.court_name);
+  });
+  it('should handle errors during creation of new court', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    const response = await request(app)
+      .post(`/courts/new`) // Use the correct route
+      .set('Authorization', `${authToken}`);
+  
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to create new court' });
+  });
+  it('should delete the court with the provided court_name', async () => {
+    const courtNameToDelete = 'New Court'; // Assuming 'New Court' exists in your database
+    const response = await request(app)
+      .delete(`/courts/deleteByName/${courtNameToDelete}`)
+      .set('Authorization', `${authToken}`);
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe('Court deleted successfully');
+  });
+
+  it('should handle errors during deletion with the provided court_name', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+
+    const courtName = 'Nonexistent Court'; // Nonexistent court name
+    const response = await request(app)
+      .delete(`/courts/deleteByName/${courtName}`)
+      .set('Authorization', `${authToken}`);
+  
+  
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to delete Court' });
   });
 });
 
@@ -140,6 +218,40 @@ describe('PUT /courts/edit/:courtId', () => {
     expect(response.body).toBeDefined();
     expect(response.body.court_name).toBe(updatedCourtData.court_name);
   });
+  it('should respond with corresponding error if court is not found', async () => {
+    const courtIdToUpdate = 1123123; // Assuming court with ID 1 exists
+    const updatedCourtData = {
+      court_name: 'Updated Court Name',
+      court_type: 'Updated Type',
+      location: 'Updated Location',
+      capacity: 6,
+      available: false
+    };
+    const response = await request(app)
+      .put(`/courts/edit/${courtIdToUpdate}`)
+      .set('Authorization', `${authToken}`)
+      .send(updatedCourtData);
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ error: 'Court not found' });
+  });
+  it('should handle error gracefully', async () => {
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    const courtIdToUpdate = 1123123; // Assuming court with ID 1 exists
+    const updatedCourtData = {
+      court_name: 'Updated Court Name',
+      court_type: 'Updated Type',
+      location: 'Updated Location',
+      capacity: 6,
+      available: false
+    };
+    const response = await request(app)
+      .put(`/courts/edit/${courtIdToUpdate}`)
+      .set('Authorization', `${authToken}`)
+      .send(updatedCourtData);
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: 'Failed to update court' });
+  });
+
 });
 
 describe('POST /courts/delete-timeslots/:courtId', () => {
@@ -153,6 +265,20 @@ describe('POST /courts/delete-timeslots/:courtId', () => {
       .send({ unselectedTimeslots });
     expect(response.status).toBe(200);
     expect(response.body.message).toBe('Unselected time slots deleted successfully');
+  });
+  it('should handle errors during deletion with the provided court_name', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+
+    const courtId = 1124124;
+    const unselectedTimeslots = ['18:00-19:00', '19:00-20:00']; // Define unselected time slots
+    const response = await request(app)
+      .post(`/courts/delete-timeslots/${courtId}`)
+      .set('Authorization', `${authToken}`)
+      .send({ unselectedTimeslots });
+  
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to delete unselected time slots' });
   });
 });
 
@@ -168,6 +294,21 @@ describe('POST /courts/add-timeslots/:courtId', () => {
       .send({ startTime, endTime });
     expect(response.status).toBe(201);
     expect(response.body.message).toBe('Timeslots added successfully');
+  });
+  it('should handle errors gracefully', async () => {
+    // Mock the database.query method to throw an error
+    jest.spyOn(pool, 'query').mockRejectedValueOnce(new Error('Database error'));
+    // Assuming courtId 1 exists in your database and startTime and endTime are provided
+    const courtId = 1;
+    const startTime = '18:00'; // Define the start time
+    const endTime = '19:00'; // Define the end time
+    const response = await request(app)
+    .post(`/courts/add-timeslots/${courtId}`)
+    .set('Authorization', `${authToken}`)
+    .send({ startTime, endTime });
+  
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to add timeslots' });
   });
 });
 

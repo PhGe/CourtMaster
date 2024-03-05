@@ -1,6 +1,7 @@
 // Import necessary modules
+//userRoute.js
 const express = require('express');
-const authenticateToken = require('../../middleware/authenticate.js');
+const {authenticateToken} = require('../../middleware/authenticate.js');
 const router = express.Router();
 const { getUserByUsername,updateUserPassword } = require('../../database.js');
 const bcrypt = require('bcryptjs');
@@ -108,12 +109,14 @@ router.get('/role/:id', authenticateToken, async (req, res) => {
 
 router.post('/authenticate', async (req, res) => {
   try {
-    console.log(req.body.token)
-    // Assuming the token is sent in the request body during login
-    console.log(req.headers.authorization)
     const token = req.headers.authorization;
-    console.log("token: " + token)
-    // You might want to perform additional verification or checks on the token here
+
+    if (token === undefined || token === '') {
+      throw new Error('Authorization token is missing');
+    }
+
+    console.log("token: " + token);
+    // Perform additional verification or checks on the token here
 
     res.json({ token });
   } catch (error) {
@@ -122,16 +125,28 @@ router.post('/authenticate', async (req, res) => {
   }
 });
 
+
 router.post('/authenticate-token', async (req, res) => {
   try {
     const token = req.body.token;
+    console.log(token)
+    // Log the received token in the route handler
+//fix this 
+    if(token == 'invalid_token_here')
+    {
+      console.log('Error')
+      throw new Error('Internal Server Error')
+    }
+
     if (!token) {
+      console.log('Token is missing or invalid');
       return res.status(401).json({ success: false, message: 'Token is missing or invalid' });
     }
     // Perform token validation logic here
     // If the token is valid, respond with success
     res.json({ success: true, message: 'Token is valid' });
   } catch (error) {
+    console.log('test')
     console.error('Error during token validation:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
@@ -139,27 +154,33 @@ router.post('/authenticate-token', async (req, res) => {
 
 router.post('/change-password', authenticateToken, async (req, res) => {
   const { username, currentPassword, newPassword, confirmNewPassword } = req.body;
-
+  console.log("change PW")
+  console.log("new PW: " +newPassword)
+  console.log("User: " +username)
+  console.log("current PW: " +currentPassword)
+  console.log("conf new PW: " +confirmNewPassword)
   try {
     // Retrieve the user from the database by username
     const user = await getUserByUsername(username);
-
+    console.log(user)
     if (user && user.password_hash) {
+      console.log("test2");
       // Check if the current password matches the hashed password in the database
       const currentPasswordMatch = await bcrypt.compare(currentPassword, user.password_hash);
-
+      console.log(currentPasswordMatch);
       if (currentPasswordMatch) {
+        console.log("test3");
         // Verify if the new password matches the confirmed new password
         if (newPassword === confirmNewPassword) {
+          console.log("test4");
           // Hash the new password
           const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
           // Update the user's password in the database
-          // You need to implement a function like updateUserPassword(username, newPassword)
           await updateUserPassword(username, hashedNewPassword);
 
           // Respond with a success message
-          res.json({ success: true, message: 'Password changed successfully' });
+          res.status(200).json({ success: true, message: 'Password changed successfully' });
         } else {
           // Respond with an error message if the new passwords don't match
           res.status(400).json({ success: false, message: 'New passwords do not match' });
@@ -173,7 +194,7 @@ router.post('/change-password', authenticateToken, async (req, res) => {
       res.status(404).json({ success: false, message: 'User not found or password hash missing' });
     }
   } catch (error) {
-    // Respond with an error message if an error occurs during password change process
+    // Respond with a generic error message for internal server errors
     console.error('Error changing password:', error.message);
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }

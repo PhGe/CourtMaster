@@ -9,6 +9,7 @@ import Settings from '../views/Settings.vue';
 import Bookings from '../views/Bookings.vue';
 import Admin from '../views/AdminView.vue';
 import Unauthorized from '../views/Unauthorized.vue';
+import  throwError  from '../routes/testError';
 import axios from 'axios';
 import store from '@/store';
 
@@ -21,7 +22,8 @@ const routes = [
   { path: '/settings', name: 'settings', component: Settings, meta: { requiresAuth: true } },
   { path: '/bookings', name: 'bookings', component: Bookings, meta: { requiresAuth: true } },
   { path: '/admin', name: 'admin', component: Admin, meta: { requiresAuth: true, requiresAdmin: true } },
-  { path: '/unauthorized', name: 'unauthorized', component: Unauthorized}
+  { path: '/unauthorized', name: 'unauthorized', component: Unauthorized},
+  { path: '/error', name: 'error', component: throwError}
 ];
 
 const router = createRouter({

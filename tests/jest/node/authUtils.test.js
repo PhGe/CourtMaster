@@ -3,12 +3,16 @@
 
 const { setTokenAndExpiration, isTokenExpired, checkTokenExpiration, logout ,resetInactivityTimer } = require('../../../src/utils/authUtils');
 const authUtils = require('../../../src/utils/authUtils');
+Object.defineProperty(global, 'performance', {
+  writable: true,
+});
 
-
-
+jest.useFakeTimers(); // Mock timers
 describe('Token Manager Functions', () => {
+  
+
   beforeEach(() => {
-    jest.useFakeTimers(); // Mock timers
+
     jest.clearAllMocks()
   });
 
@@ -79,5 +83,6 @@ describe('Token Manager Functions', () => {
     jest.advanceTimersByTime(30000); // Advance timer by 30 seconds
     expect(isTokenExpired()).toBe(false); // Timer reset, token should not expire
   });
+
 });
 

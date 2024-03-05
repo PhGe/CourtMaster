@@ -1,7 +1,7 @@
 //bookinRoute.js
 // Import necessary modules
 const express = require('express');
-const authenticateToken = require('../../middleware/authenticate.js');
+const {authenticateToken} = require('../../middleware/authenticate.js');
 const router = express.Router();
 
 

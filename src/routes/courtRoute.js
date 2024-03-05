@@ -1,6 +1,6 @@
 // Import necessary modules
 const express = require('express');
-const authenticateToken = require('../../middleware/authenticate.js');
+const {authenticateToken} = require('../../middleware/authenticate.js');
 const router = express.Router();
 
 // Define the booking route
@@ -106,7 +106,7 @@ router.get('/all/:courtId', authenticateToken, async (req, res) => {
       // Send the processed court data as a JSON response
       res.json(court);
   } catch (error) {
-      console.error('Error during booking:', error);
+      console.error('Error during Timeslot retrieval:', error);
       res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });

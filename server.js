@@ -10,7 +10,7 @@ const bookingRoute = require('./src/routes/bookingRoute.js');
 const courtRoute = require('./src/routes/courtRoute.js');
 const { compare: bcryptCompare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authenticateToken = require('./middleware/authenticate.js');
+const {authenticateToken} = require('./middleware/authenticate.js');
 const {
   setTokenAndExpiration,
   checkTokenExpiration,
@@ -82,11 +82,16 @@ function generateToken(user) {
   return token;
 }
 
+function handleError(req, res, next) {
+  const error = new Error('Test error');
+  next(error);
+}
 // Route for API
 
 app.use('/booking', bookingRoute(pool));
 app.use('/courts', courtRoute(pool));
 app.use('/users' ,userRoute(pool));
+app.get('/error', handleError);
 
 app.get('/userlist', authenticateToken, (req, res) => {
   // Only logged-in users can access this route
@@ -125,7 +130,7 @@ app.post('/users/login', async (req, res) => {
         console.log("generateToken")
         const token = generateToken(user);
         const userId = user.id;
-        const expirationTime = 1;
+        const expirationTime = 120;
         setTokenAndExpiration(token, expirationTime)
 
         //on every request check if expired
@@ -155,18 +160,21 @@ app.get('/', (req, res) => {
 });
 
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(500).json({ success: false, error: 'Internal Server Error' });
 });
 
-
+startServer(port)
 // Start the server
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
-  });
+function startServer(port,) {
+  if (process.env.NODE_ENV !== 'test') {
+    console.log('Starting server...'); // Add this line for debugging
+    app.listen(port, () => {
+      console.log(`Listening on port ${port}`);
+    });
+  }
 }
 
 
-module.exports = app;
+module.exports ={ app, startServer};

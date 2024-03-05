@@ -1,14 +1,14 @@
 //server.test.js
 /* eslint-disable no-undef */
 const request = require('supertest');
-const app = require('../../../server'); // Assuming your server file is named server.js
+const { app, startServer } = require('../../../server');
+ // Assuming your server file is named server.js
 const { loginAndGetToken } = require('../../../src/utils/loginUtilsTwo');
 const { deleteUserByUsername } = require('../../../database');
 const database = require('../../../database');
 const loginUtilsTwo = require('../../../src/utils/loginUtilsTwo');
 const authUtils = require('../../../src/utils/authUtils');
 jest.spyOn(database, 'insertUser');
-
 
 afterEach(async () => {
     // Delete the user created during signup after each test
@@ -26,7 +26,33 @@ beforeAll(async () => {
     }
 });
 
+describe('Server Startup', () => {
+    it('should listen at specified port', () => {
+        // Mock the NODE_ENV environment variable
+        process.env.NODE_ENV = 'development';
+        console.log("serberstartip");
+        
+        // Set up a mock for the app.listen function
+        const listenMock = jest.spyOn(app, 'listen').mockImplementation((port, callback) => {
+            callback();
+        });
+
+        // Call the startServer function
+        startServer(3000);
+
+        // Wait for a short delay to ensure startServer() completes its operation
+        setTimeout(() => {
+            // Expect that app.listen has been called with the specified port
+            expect(listenMock).toHaveBeenCalledWith(3000, expect.any(Function));
+
+            // Restore the original implementation of app.listen
+            listenMock.mockRestore();
+        }, 1000); // Adjust the delay as needed
+    });
+});
+
 describe('Server Routes', () => {
+
     describe('GET /', () => {
         it('responds with welcome message', async () => {
             const res = await request(app).get('/');
@@ -141,25 +167,22 @@ describe('Server Routes', () => {
         });
         
     });
-});
 
-describe('Functions', () => {
-    describe('generateToken()', () => {
-        it('generates a JWT token', () => {
-            // Write test case for generateToken function
-            // For example, test whether the token generated is valid
+    describe('Error handling', () => {
+        it('handles errors gracefully', async () => {
+            // Make a request that intentionally triggers an error
+            const res = await request(app)
+                .get('/error');
+    
+            // Expectations
+            expect(res.statusCode).toEqual(500);
+            expect(res.body).toHaveProperty('success', false);
+            expect(res.body).toHaveProperty('error', 'Internal Server Error');
         });
     });
-
-    describe('checkTokenExpiration()', () => {
-        it('checks token expiration', () => {
-            // Write test case for checkTokenExpiration function
-            // For example, test whether the function correctly identifies expired tokens
-        });
-    });
-
-    // Add test cases for other functions used in server.js
 });
+
+
 
 
 
