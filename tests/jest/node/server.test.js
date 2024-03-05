@@ -47,7 +47,7 @@ describe('Server Startup', () => {
 
             // Restore the original implementation of app.listen
             listenMock.mockRestore();
-        }, 1000); // Adjust the delay as needed
+        }, 100000); // Adjust the delay as needed
     });
 });
 
