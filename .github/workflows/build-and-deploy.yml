@@ -102,7 +102,7 @@ jobs:
 
     environment:
       name: testing
-      url: ${{ steps.deployment.outputs.page_url }}test
+      url: ${{ steps.deployment.outputs.page_url }}testing
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -111,7 +111,7 @@ jobs:
     
     environment:
       name: testing
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}runtests
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       API_BASE_URL: ${{ secrets.API_BASE_URL }}
