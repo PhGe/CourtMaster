@@ -81,7 +81,7 @@ jobs:
 
     environment:
       name: development
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: /dev${{ steps.deployment.outputs.page_url }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -102,12 +102,12 @@ jobs:
 
     environment:
       name: testing
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: /test${{ steps.deployment.outputs.page_url }}
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
   run-tests:
-    needs: [deploy-development, deploy-development]
+    needs: [deploy-development, deploy-testing]
     
     environment:
       name: testing
