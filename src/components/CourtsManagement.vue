@@ -39,8 +39,12 @@
           </div>
           <!-- Court action buttons -->
           <div class="court-actions">
-            <el-button type="primary" @click="editCourt(court)">Edit</el-button>
-            <el-button type="danger" @click="deleteCourt(court)">Delete</el-button>
+            <el-button type="primary" @click="editCourt(court)">Edit
+              <el-icon :size="20" style="margin-left: 20px" ><Edit /></el-icon>
+            </el-button>
+            <el-button type="danger" @click="deleteCourt(court)">Delete
+              <el-icon :size="20" style="margin-left: 20px"><Delete /></el-icon>
+            </el-button>
           </div>
         </div>
       </div>
@@ -80,7 +84,9 @@
                       </el-tag>
                     </div>
                   </div>
-                  <el-button type="primary" class="update-court-btn" @click="updateCourt">Update Court</el-button>
+                  <el-button type="primary" class="update-court-btn" @click="updateCourt">Update Court
+                    <el-icon :size="20" style="margin-left: 20px" ><Edit /></el-icon>
+                  </el-button>
                   <div class="timeslot-input">
                     <label for="startHour">Start Time:</label>
                     <select v-model="newTimeslot.startHour" id="startHour">
@@ -103,13 +109,17 @@
                     </select>
                   </div>
                   
-                  <el-button type="primary" @click="addNewTimeslot(editedCourt)">Add Timeslot</el-button>
+                  <el-button type="primary" @click="addNewTimeslot(editedCourt)">Add Timeslot
+                    <el-icon :size="20" style="margin-left: 20px" ><Plus /></el-icon>
+                  </el-button>
                   
                   <!-- Other form fields and buttons -->
                 </el-form>
         </div>
     </div>
-    <el-button id="CreateButton" type="primary" @click="toggleCreateForm">Create New Court</el-button>
+    <el-button id="CreateButton" type="primary" @click="toggleCreateForm">Create New Court
+      <el-icon :size="20" style="margin-left: 20px"><Plus /></el-icon>
+    </el-button>
     <div v-if="isCreating" class="court-card">
       
         <div class="court-card-header">
@@ -134,7 +144,9 @@
                 <el-form-item label="Available" class="court-form-item">
                   <el-checkbox v-model="newCourt.available">Available</el-checkbox>
                 </el-form-item>
-                <el-button type="primary" class="create-court-btn" @click="createCourt">Confirm Creation</el-button>
+                <el-button type="primary" class="create-court-btn" @click="createCourt">Confirm Creation
+                  <el-icon :size="20" style="margin-left: 20px"><DocumentAdd /></el-icon>
+                </el-button>
               </el-form>
         </div>
     </div>

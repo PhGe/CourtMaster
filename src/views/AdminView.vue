@@ -13,10 +13,6 @@
           <h3 slot="header">Cancel Bookings</h3>
           <AdminBooking :authToken="authToken" />
         </el-card>
-        <el-card class="admin-option-card">
-          <h3 slot="header">Invoice</h3>
-          <!-- Link to the invoice page for generating and viewing invoices -->
-        </el-card>
       </div>
     </div>
   </div>

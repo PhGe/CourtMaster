@@ -18,6 +18,7 @@
 </template>
   
 <script>
+  import { ElNotification } from 'element-plus'
   import axios from 'axios';
 export default {
   name: 'LoginView',
@@ -64,7 +65,7 @@ export default {
     }
   } catch (error) {
     console.error('Error logging in:', error);
-    alert("Falscher Login");
+    ElNotification.error("Falscher Login");
     // Redirect to login page or handle the error as appropriate
     this.$router.push('/login');
   }

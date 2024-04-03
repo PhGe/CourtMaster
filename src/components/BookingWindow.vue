@@ -252,7 +252,9 @@ export default {
             this.availableTimeSlots = this.availableTimeSlots.filter(slot => slot !== this.selectedTimeSlot);
             this.selectedTimeSlot = null;
             this.isBookingWindowOpen = false;
-            this.showModal = false;
+          setTimeout(() => {
+          this.showModal = false; // Close the modal after 2 seconds
+           }, 1500);
           })
           .catch((error) => {
             console.error('Error confirming booking:', error);

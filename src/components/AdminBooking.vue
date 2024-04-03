@@ -25,7 +25,9 @@
       </div>
     </el-card>
     <!-- Load more button if bookings exceed 10 -->
-    <el-button v-if="shouldShowLoadMoreButton" type="primary" @click="loadMore">Load more</el-button>
+    <el-button v-if="shouldShowLoadMoreButton" type="primary" @click="loadMore">Load more
+      <el-icon :size="20" style="margin-left: 20px"><Loading /></el-icon>
+    </el-button>
   </div>
 </template>
   

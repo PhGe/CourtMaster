@@ -14,7 +14,8 @@
         <!-- Add more details as needed -->
       </div>
       <div class="booking-card-footer">
-        <el-button type="danger" @click="cancelBooking(booking.booking_id)">Cancel Booking</el-button>
+        <el-button type="danger" @click="showCancelModal">Cancel</el-button>
+        <CancelModal v-if="showModal" @confirm="cancelBooking(booking.booking_id)" @cancel="hideCancelModal" />
       </div>
     </el-card>
   </div>
@@ -23,18 +24,20 @@
 <script>
 import axios from 'axios';
 import Header from '../components/Header.vue';
+import CancelModal from '../components/CancelModal.vue';
 import { mapGetters } from 'vuex';
 
 export default {
 name: 'BookingsComponent',
 components: {
   Header,
+  CancelModal,
 },
 data() {
   return {
     bookings: [],
     apiUrl: process.env.API_BASE_URL || 'https://court-master-e4c0d72c16c5.herokuapp.com' // Default to localhost
-  };
+      };
 },
 created() {
   this.fetchBookings();
@@ -43,6 +46,31 @@ computed: {
   ...mapGetters(['getUserId']),
 },
 methods: {
+  showCancelModal() {
+        this.showModal = true;
+        console.log("test")
+    },
+    hideCancelModal() {
+      this.showModal = false;
+    },
+    async cancelBooking(bookingId) {
+    try {
+      const authToken = localStorage.getItem('authToken');
+      await axios.delete(`${this.apiUrl}/booking/cancel/${bookingId}`, {
+        headers: {
+          'Authorization': authToken,
+        }
+      });
+      this.fetchBookings();
+      setTimeout(() => {
+          this.showModal = false; // Close the modal after 2 seconds
+          this.confirmed = true;
+          console.log("tt")
+           }, 1500);
+    } catch (error) {
+      console.error('Error canceling booking:', error);
+    }
+  },
   async fetchBookings() {
     try {
       const authToken = localStorage.getItem('authToken');
@@ -61,19 +89,7 @@ methods: {
       console.error('Error fetching bookings:', error);
     }
   },
-  async cancelBooking(bookingId) {
-    try {
-      const authToken = localStorage.getItem('authToken');
-      await axios.delete(`${this.apiUrl}/booking/cancel/${bookingId}`, {
-        headers: {
-          'Authorization': authToken,
-        }
-      });
-      this.fetchBookings();
-    } catch (error) {
-      console.error('Error canceling booking:', error);
-    }
-  },
+
 }
 };
 </script>
